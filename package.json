@@ -6,6 +6,10 @@
   "license": "MIT",
   "homepage": "",
   "main": "dist/index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mjlux/mongoose-bread.git"
+  },
   "scripts": {
     "prestart": "npm run build",
     "start": "node server.js",
