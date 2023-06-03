@@ -111,6 +111,28 @@ ProductSchema.plugin(mongooseBread, {
 
 For all Options and recommended setups - see: [Options Documentation](./docs/options.md)
 
+## Methods
+
+mongoose-bread adds the following methods to your Schema
+
+- browse( options )
+- read( options )
+- edit( options )
+- add( options )
+- destroy( options )
+
+With softDelete enabled it adds two additional methods
+
+- softDelete( options )
+- rehabilitate( options )
+
+It also inherits the methods from [mongoose-paginate-v2](https://github.com/aravindnc/mongoose-paginate-v2#modelpaginatequery-options-callback) and [mongoose-delete](https://github.com/dsanel/mongoose-delete#method-overridden)[^1]  
+BUT these methods are used and abstracted by mongoose-bread so you don't have the hassle to figure them out
+
+For the respective output of these methods see: [Returnvalue Documentation](./docs/returnvalues.md)
+
+[^1]: only if softDelete is enabled `pluginOptions.softDelete = true`
+
 ## Typescript
 
 Looking for wizards
