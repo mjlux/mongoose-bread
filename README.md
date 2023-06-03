@@ -95,6 +95,22 @@ For a thorough example setup - see: [Usage Documentation](./docs/usage.md)
 
 We have them - use them - see: [Snippets Documentation](./docs/snippets.md)
 
+## Plugin Options
+
+mongoose-bread is configurable to your needs through global Options and when registering the plugin to your Schema  
+Here is a glimpse of what is possible:
+
+```js
+ProductSchema.plugin(mongooseBread, { 
+  defaultPageSize: 20, // fallback value for limit - default: 10
+  maxPageSize: 50, // limits queries to return 50 documents max - default: 100
+  searchableFields: ['name', 'description'], // enables search
+  blacklistedFields: ['__v'], // exclude __v from all results
+})
+```
+
+For all Options and recommended setups - see: [Options Documentation](./docs/options.md)
+
 ## Typescript
 
 Looking for wizards
