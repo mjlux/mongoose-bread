@@ -131,10 +131,42 @@ BUT these methods are used and abstracted by mongoose-bread so you don't have th
 
 For the respective output of these methods see: [Returnvalue Documentation](./docs/returnvalues.md)
 
-[^1]: only if softDelete is enabled `pluginOptions.softDelete = true`
+## Helper Methods
+
+mongoose-bread provides the following helper methods through a `Model.breadHelper()` call
+
+- createBrowseOptions( request )
+- createReadOptions( request )
+- createEditOptions( request )
+- createAddOptions( request )
+- createDeleteOptions( request )
+
+With softDelete enabled it adds three additional methods
+
+- createBrowseDeletedOptions( request )
+- createReadDeletedOptions( request )
+- createRehabilitateOptions( request )
+
+For shorthands in your `Controller/[Resource]Controller.js` you can use the following snippet 
+
+```js
+const {
+  createBrowseOptions,
+  createReadOptions,
+  createEditOptions,
+  createAddOptions,
+  createDeleteOptions,
+  createBrowseDeletedOptions,
+  createReadDeletedOptions,
+  createRehabilitateOptions,
+} = ResourceModel.breadHelper()
+```
+
+To understand how helper methods and methods work together see: [Returnvalue Documentation](./docs/returnvalues.md)
 
 ## Typescript
 
+Working on it  
 Looking for wizards
 
 ## Development
@@ -148,3 +180,5 @@ In order to run the tests, you need to have the Mongo Deamon running locally.
 ## License
 
 [MIT](LICENSE)
+
+[^1]: only if softDelete is enabled `pluginOptions.softDelete = true`
