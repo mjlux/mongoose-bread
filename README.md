@@ -89,10 +89,11 @@ responds with 5 products, sorted by quantity, on page 2 with only `name` and `pr
 
 ## Usage
 
-For a thorough example setup see: [Usage Documentation](./docs/usage.md)
+For a thorough example setup - see: [Usage Documentation](./docs/usage.md)
+
 ## Snippets
 
-We have them - use them
+We have them - use them - see: [Snippets Documentation](./docs/snippets.md)
 
 ## Typescript
 
@@ -100,7 +101,8 @@ Looking for wizards
 
 ## Development
 
-- Ensure all tests pass before you commit by running `npm run test`. In order to run the tests, you need to have the Mongo Deamon running locally.
+- Ensure all tests pass before you commit by running `npm run test`.  
+In order to run the tests, you need to have the Mongo Deamon running locally.
 - There are pre-commit hooks that run to ensure the _files you've changed_ are formatted correctly.
 - Optionally you can manually run `npm run lint && npm run prettier` to lint and format every relevant file
 - If using VS Code, install eslint and prettier for easy editor integration.
