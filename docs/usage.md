@@ -129,3 +129,54 @@ async function main() {
 
 main().catch((err) => console.error(err));
 ```
+
+## Advanced Usage
+
+### Prevent certain fields to be passed
+
+By default this plugin allows a custom query to be passed via request.query as JSON string.  
+`api.example.com/products?query="{"protection":"disable"}"`  
+This can be harmfull if used by users without admin privileges  
+To disable this functionality remove the `request.query.query` key
+
+via middleware `Routes/ProductRoutes.js`
+
+```js
+const sanitizeBreadRequest = (req, res, next) => {
+  delete req.query.sort;
+  delete req.query.query;
+  delete req.query.projection;
+  //...
+  next();
+}
+
+router.get(
+  "/",
+  sanitizeBreadRequest,
+  ProductController.browse
+);
+```
+
+or in the Controller before helper call `Controller/ProductController.js`
+
+```js
+const Product = require("../Models/Product");
+
+module.exports = {
+  browse: catchAsync(async (req, res, next) => {
+
+    delete req.query.sort;
+    delete req.query.query;
+    delete req.query.projection;
+    //...
+
+    const options = Product.breadHelper().createBrowseOptions(req);
+    const result = await Product.browse(options);
+
+    res.status(200).json({
+      message: req.query.search ? "search" : "browse",
+      result,
+    });
+  }),
+};
+```
