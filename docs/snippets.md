@@ -25,7 +25,7 @@ These snippets are provided.
 - Controller
 - softDelete Controller
 
-For everyone whose not using VSCode, here is the ouput of all the snippets:  
+For everyone who is not using VSCode, here is the output of all the snippets:  
 
 ## global Options
 
