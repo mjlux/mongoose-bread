@@ -19,7 +19,7 @@
     "test:plugin": "npm run pretest & node node_modules/mocha/bin/mocha test/mongoose-bread.test.js -R spec --ui bdd --timeout 9999999",
     "build": "babel src -d dist",
     "lint": "node node_modules/eslint/bin/eslint \"test\" \"src\" \".eslintrc.js\" --fix",
-    "prettier": "node node_modules/prettier/bin-prettier --write \"{src,test}/**/*.js\" \"docs/*.md\"",
+    "prettier": "node node_modules/prettier/bin-prettier --write \"{src,test}/**/*.js\"",
     "prepublish": "npm run test"
   },
   "husky": {
