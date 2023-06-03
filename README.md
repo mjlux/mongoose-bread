@@ -87,6 +87,9 @@ All through the parameters in your URL.
 A call to `https://myapp.com/api/v1/products?page=2&limit=5&select=name+price&sort=quantity`  
 responds with 5 products, sorted by quantity, on page 2 with only `name` and `price` selected
 
+## Usage
+
+For a thorough example setup see: [Usage Documentation](./docs/usage.md)
 ## Snippets
 
 We have them - use them
