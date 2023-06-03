@@ -39,7 +39,53 @@ npm install mongoose-bread
 
 ## Quick Use
 
-...work in progress - we will be back shortly
+Import the plugin in your Model `Models/Product.js`
+
+```js
+const mongooseBread = require('mongoose-bread')
+```
+
+Add the plugin to your Schema
+
+```js
+ProductSchema.plugin(mongooseBread, { /* options */ })
+```
+
+In your Controller make use of breadHelper() and methods provided by the plugin `Controller/ProductController.js`
+
+Import the Model
+
+```js
+const Product = require('../Models/Product')
+```
+
+Add Controller method - i.e. `browseProducts()`
+
+```js
+ProductController.browseProducts = async (req, res) => {
+  const options = Product.breadHelper().createBrowseOptions(req)
+  const result = await Product.browse(options)
+  res.status(200).json(result)
+}
+```
+
+Add a Route to use browseProducts() `server.js`
+
+```js
+// your imports
+const ProductController = require('../Controller/ProductController')
+
+// your express setup
+app.get('/api/v1/products', ProductController.browseProducts)
+```
+
+With your server running you can now paginate, search and filter the results.  
+Select only specific fields to return.  
+Make the output lean ...and much more.  
+All through the parameters in your URL.
+
+A call to `https://myapp.com/api/v1/products?page=2&limit=5&select=name+price&sort=quantity`  
+responds with 5 products, sorted by quantity, on page 2 with only `name` and `price` selected
 
 ## Snippets
 
