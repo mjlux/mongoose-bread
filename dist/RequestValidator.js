@@ -1,6 +1,6 @@
 "use strict";
 
-var MongooseBreadError = require("./mongooseBreadError");
+var MongooseBreadError = require("./MongooseBreadError");
 var _require = require("mongoose"),
   isValidObjectId = _require.isValidObjectId;
 

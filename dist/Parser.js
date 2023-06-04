@@ -13,7 +13,7 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToAr
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
 var _require = require("./RequestValidator"),
   checkRequest = _require.checkRequest;
-var MongooseBreadError = require("./mongooseBreadError");
+var MongooseBreadError = require("./MongooseBreadError");
 function parseSelect(query) {
   var fields = query.select ? Array.from(new Set(_toConsumableArray(query.select.split(",")))) : [];
   return fields.join(" ");

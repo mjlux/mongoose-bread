@@ -9,8 +9,15 @@ Object.defineProperty(exports, "BreadUrlBuilder", {
     return _BreadUrlBuilder.default;
   }
 });
+Object.defineProperty(exports, "MongooseBreadError", {
+  enumerable: true,
+  get: function get() {
+    return _MongooseBreadError.default;
+  }
+});
 exports.default = void 0;
 exports.mongooseBread = mongooseBread;
+var _MongooseBreadError = _interopRequireDefault(require("./MongooseBreadError"));
 var _BreadUrlBuilder = _interopRequireDefault(require("./BreadUrlBuilder"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
@@ -125,6 +132,7 @@ function mongooseBread(schema, pluginOptions) {
 if (module) {
   module.exports = mongooseBread;
   module.exports.mongooseBread = mongooseBread;
+  module.exports.MongooseBreadError = require("./MongooseBreadError");
 }
 var _default = mongooseBread;
 exports.default = _default;
