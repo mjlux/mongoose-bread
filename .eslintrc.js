@@ -11,7 +11,7 @@ module.exports = {
   },
   parser: 'babel-eslint',
   rules: {
-    'linebreak-style': ['warn', 'windows'],
+    'linebreak-style': ['warn', 'unix'],
   },
   overrides: [
     {
