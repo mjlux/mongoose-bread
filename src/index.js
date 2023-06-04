@@ -115,8 +115,10 @@ function mongooseBread(schema, pluginOptions) {
 if (module) {
   module.exports = mongooseBread;
   module.exports.mongooseBread = mongooseBread;
+  module.exports.MongooseBreadError = require("./MongooseBreadError");
 }
 
 export default mongooseBread;
 export { mongooseBread };
+export { default as MongooseBreadError } from "./MongooseBreadError";
 export { default as BreadUrlBuilder } from "./BreadUrlBuilder";
