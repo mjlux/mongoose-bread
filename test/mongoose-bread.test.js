@@ -3,7 +3,7 @@
 const mongoose = require("mongoose");
 const { expect } = require("chai");
 const mongooseBread = require("../dist/index");
-const { MongooseBreadError } = require("../dist");
+const { MongooseBreadError } = require("../dist/index");
 
 const MONGO_URI = "mongodb://localhost/mongoose_bread_test";
 
