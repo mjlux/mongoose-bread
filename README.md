@@ -2,6 +2,9 @@
 
 A pagination and softdelete library for [Mongoose](http://mongoosejs.com).
 
+[![npm version](https://img.shields.io/npm/v/mongoose-bread.svg)](https://www.npmjs.com/package/mongoose-bread)
+[![unittests](https://github.com/mjlux/mongoose-bread/actions/workflows/test.yml/badge.svg)](https://github.com/mjlux/mongoose-bread/actions/workflows/test.yml)
+
 ## Why This Plugin
 
 mongoose-bread is a pagination and softdelete library for quick feature-rich setup of JSON apis.
