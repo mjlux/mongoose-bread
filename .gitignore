@@ -2,3 +2,4 @@ backend
 node_modules
 server.js
 docs/_*.md
+.vscode/settings.json
