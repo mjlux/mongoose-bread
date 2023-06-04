@@ -1,5 +1,5 @@
 const { checkRequest } = require("./RequestValidator");
-const MongooseBreadError = require("./mongooseBreadError");
+const MongooseBreadError = require("./MongooseBreadError");
 
 function parseSelect(query) {
   const fields = query.select

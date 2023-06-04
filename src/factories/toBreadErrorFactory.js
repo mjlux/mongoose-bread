@@ -1,4 +1,4 @@
-const MongooseBreadError = require("../mongooseBreadError");
+const MongooseBreadError = require("../MongooseBreadError");
 
 function toBreadErrorFactory(result = {}) {
   return function toBreadError(error) {

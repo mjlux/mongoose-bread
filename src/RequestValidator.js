@@ -1,4 +1,4 @@
-const MongooseBreadError = require("./mongooseBreadError");
+const MongooseBreadError = require("./MongooseBreadError");
 const { isValidObjectId } = require("mongoose");
 
 /**
