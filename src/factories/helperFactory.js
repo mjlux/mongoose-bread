@@ -228,7 +228,7 @@ function Factory(schema, pluginOptions = {}) {
     createBrowseDeletedOptions(request) {
       request.__breadSoftDeleteHelperOptions = {
         customFind: "findDeleted",
-        customCount: "countDeleted",
+        customCount: "countDocumentsDeleted",
         issuer: "createBrowseDeletedOptions",
       };
       const options = this.createBrowseOptions(request);

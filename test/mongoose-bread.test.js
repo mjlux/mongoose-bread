@@ -530,7 +530,7 @@ describe("mongoose-bread", async function () {
       expect(browseDeletedOptions)
         .property("paginateOptions")
         .that.has.property("customCount")
-        .to.equal("countDeleted");
+        .to.equal("countDocumentsDeleted");
       expect(readDeletedOptions).to.be.an.instanceOf(Object);
       expect(readDeletedOptions).to.include.keys([
         "query",
