@@ -2,7 +2,7 @@
 
 const mongoose = require("mongoose");
 const { expect } = require("chai");
-const BreadUrlBuilder = require("../dist/BreadUrlBuilder");
+const { BreadUrlBuilder } = require("../dist/index");
 
 describe("BreadUrlBuilder", function () {
   it("is instantiable", function () {

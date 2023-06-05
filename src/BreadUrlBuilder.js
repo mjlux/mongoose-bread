@@ -374,7 +374,4 @@ class BreadUrlBuilder {
   }
 }
 
-if (module) {
-  module.exports = BreadUrlBuilder;
-}
-export default BreadUrlBuilder;
+module.exports = BreadUrlBuilder;
