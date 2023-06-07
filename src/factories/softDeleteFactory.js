@@ -5,8 +5,8 @@ function softDeleteFactory(pluginOptions) {
   const { docs, acknowledged, modifiedCount } = pluginOptions.customLabels;
   const toBreadResult = ([result, _docs]) => ({
     [docs]: _docs,
-    [acknowledged]: result.acknowledged,
-    [modifiedCount]: result.modifiedCount,
+    [acknowledged]: result.acknowledged ?? true,
+    [modifiedCount]: result.modifiedCount ?? result.nModified,
   });
   const toBreadError = toBreadErrorFactory({
     [docs]: [],

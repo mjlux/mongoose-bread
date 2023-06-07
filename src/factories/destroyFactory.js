@@ -5,7 +5,7 @@ function destroyFactory(pluginOptions) {
   const { docs, acknowledged, deletedCount } = pluginOptions.customLabels;
   const toBreadResult = ([result, _docs]) => ({
     [docs]: _docs,
-    [acknowledged]: result.acknowledged,
+    [acknowledged]: result.acknowledged ?? !!result.ok,
     [deletedCount]: result.deletedCount,
   });
   const toBreadError = toBreadErrorFactory({
