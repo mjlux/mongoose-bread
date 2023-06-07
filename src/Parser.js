@@ -127,7 +127,7 @@ function parseRequestUserIdPath(request, options) {
   try {
     const { requestUserIdPath } = options;
     const userId = requestUserIdPath.split(".").reduce((user, key) => {
-      if (Object.hasOwnProperty.call(user, key)) {
+      if (key in user) {
         return user[key];
       }
 
