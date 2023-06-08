@@ -41,7 +41,6 @@ const defaultPluginOptions = {
   customFind: "find",
   customLabels: {
     docs: "docs",
-    pagination: "pagination",
     limit: "limit",
     page: "page",
     pagingCounter: "pagingCounter",
@@ -51,7 +50,7 @@ const defaultPluginOptions = {
     prevPage: "prevPage",
     totalDocs: "totalDocs",
     totalPages: "totalPages",
-    meta: null,
+    meta: "pagination",
     acknowledged: "acknowledged",
     modifiedCount: "modifiedCount",
     deletedCount: "deletedCount",
