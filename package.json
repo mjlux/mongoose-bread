@@ -1,6 +1,6 @@
 {
   "name": "mongoose-bread",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "A pagination and softdelete library for mongoose",
   "author": "mjlux",
   "license": "MIT",
