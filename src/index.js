@@ -41,6 +41,7 @@ const defaultPluginOptions = {
   customFind: "find",
   customLabels: {
     docs: "docs",
+    pagination: "pagination",
     limit: "limit",
     page: "page",
     pagingCounter: "pagingCounter",
