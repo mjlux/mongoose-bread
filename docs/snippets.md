@@ -52,6 +52,7 @@ mongooseBread.options = {
     allowDiskUse: false, // allow MongoDB queries to use more than 100 MB - default: false
     customLabels: { // optional - set custom keys for results
         docs: 'docs', // default: 'docs'
+        meta: 'pagination', // default: 'pagination'
         limit: 'limit', // default: 'limit'
         page: 'page', // default: 'page'
         pagingCounter: 'pagingCounter', // default: 'pagingCounter'

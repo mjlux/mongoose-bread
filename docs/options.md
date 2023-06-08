@@ -36,6 +36,7 @@ Inherited from mongoose-paginate-v2 [Documentation](https://github.com/aravindnc
 - customFind: 'find'
 - customLabels:
   - docs: 'docs'
+  - meta: 'pagination'
   - limit: 'limit'
   - page: 'page'
   - pagingCounter: 'pagingCounter'
@@ -45,7 +46,6 @@ Inherited from mongoose-paginate-v2 [Documentation](https://github.com/aravindnc
   - prevPage: 'prevPage'
   - totalDocs: 'totalDocs'
   - totalPages: 'totalPages'
-  - meta: null
   - acknowledged: 'acknowledged' 👈 **additional mongoose-bread label**
   - modifiedCount: 'modifiedCount' 👈 **additional mongoose-bread label**
   - deletedCount: 'deletedCount' 👈 **additional mongoose-bread label**
@@ -172,6 +172,7 @@ mongooseBread.options = {
   customLabels: {
     // optional - set custom keys for results
     docs: "docs", // default: 'docs'
+    meta: "pagination", // default: 'pagination'
     limit: "limit", // default: 'limit'
     page: "page", // default: 'page'
     pagingCounter: "pagingCounter", // default: 'pagingCounter'

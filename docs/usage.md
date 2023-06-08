@@ -35,6 +35,7 @@ mongooseBread.options = {
   allowDiskUse: true, // default: false
   customLabels: { // optional - set custom keys for results
     docs: "documents", // default: 'docs'
+    meta: "myPaginationData", // default: 'pagination'
     limit: "maxResultSize", // default: 'limit'
     page: "page", // default: 'page'
     pagingCounter: "currentPageFirstDocumentStartIndex", // default: 'pagingCounter'
