@@ -99,6 +99,9 @@ class BreadUrlBuilder {
     this.#hash = $hash.startsWith("#") ? $hash : `#${$hash}`;
     return this;
   }
+  setPath($path){
+    return this.clearPath().addPath($path)
+  }
   addPath($path) {
     if (!$path.toString)
       throw new Error("invalid param - expected stringifyable - @addPath()");
@@ -337,6 +340,7 @@ class BreadUrlBuilder {
   }
   clearPath() {
     this.#paths = new Array();
+    this.search(false)
     return this;
   }
   clearParameter() {

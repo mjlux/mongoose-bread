@@ -83,6 +83,24 @@ describe("BreadUrlBuilder", function () {
     );
   });
 
+  it('resets to endpoint with added path when .setPath() is used"', function () {
+    const testUrl = new BreadUrlBuilder("http://api.test.org")
+      .addPath("/products/123/details/")
+      .addPath("newest")
+      .addToPath("456/")
+      .addPath("/orange")
+      .setPath("reset");
+    expect(`${testUrl}`).to.equal(
+      "https://api.test.org/reset"
+    );
+
+    const userId = "6478d57784fabdbf127d0a2a";
+    testUrl.clearPath().addPath("/member/friend/").setPath("reset").addToPath(userId);
+    expect(`${testUrl}`).to.equal(
+      "https://api.test.org/reset/6478d57784fabdbf127d0a2a"
+    );
+  });
+
   it('adds "/" seperated path with one call to .addPath()"', function () {
     const testUrl = new BreadUrlBuilder("http://api.test.org")
       .addPath("/products/123/details/")
@@ -229,7 +247,7 @@ describe("BreadUrlBuilder", function () {
 
     testUrl.search("new").clearPath();
     expect(`${testUrl}`).to.equal(
-      "https://api.test.org/products?search=new#footer"
+      "https://api.test.org/products#footer"
     );
 
     testUrl
