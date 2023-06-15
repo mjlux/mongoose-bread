@@ -379,9 +379,20 @@ class BreadUrlBuilder {
 
   // --------- GETTER  -----------
 
-  getURL() { 
-    return this.get(); 
-  }
+  getParameter($key){ return this.#parameters.get($key) }
+  getLean(){ return this.#parameters.get("lean") }
+  getLeanWithId(){ return this.#parameters.get("leanWithId") }
+  getLeanWithout_id(){ return this.#parameters.get("leanWithout_id") }
+  getSearch(){ return this.#parameters.get("search") }
+  getLimit(){ return this.#parameters.get("limit") }
+  getPage(){ return this.#parameters.get("page") }
+  getSort(){ return this.#parameters.get("sort") }
+  getSelect(){ return this.#parameters.get("select") }
+  getProjection(){ return this.#parameters.get("projection") }
+  getQuery(){ return this.#parameters.get("query") }
+  getPopulate(){ return this.#parameters.get("populate") }
+  getURL() { return this.get(); }
+
   get() {
     this.#applyProtocol();
     const endpoint = [this.#endpoint, ...this.#paths]
