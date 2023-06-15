@@ -175,6 +175,7 @@ class BreadUrlBuilder {
     const existingSort = new Set(this.#parameters.get("sort").split(" "))
 
     $sort = $sort
+      .trim()
       .split(" ")
       .map(s => s.replace(/-/g, ""))
       
@@ -201,6 +202,7 @@ class BreadUrlBuilder {
       throw new Error("invalid argument 'order' - expected BreadUrlBuilder.ASC|BreadUrlBuilder.DESC - @sort()");
 
     $sort = $sort
+      .trim()
       .split(" ")
       .map(s => s.replace(/-/g, ""))
       .map(s => ($order === DESC) ? `-${s}` : s)
