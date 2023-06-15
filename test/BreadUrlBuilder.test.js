@@ -160,9 +160,26 @@ describe("BreadUrlBuilder", function () {
     const { ASC, DESC } = BreadUrlBuilder;
     const testUrl = new BreadUrlBuilder("http://api.test.org")
       .sort("friends", ASC)
-      .sort("views", DESC);
+      .addSort("views", DESC);
 
     expect(`${testUrl}`).to.equal("https://api.test.org/?sort=friends+-views");
+    
+    testUrl.addSort("name angle reach", ASC)
+
+    expect(testUrl.getSort()).to.equal("friends -views name angle reach");
+    expect(`${testUrl}`).to.equal("https://api.test.org/?sort=friends+-views+name+angle+reach");
+  });
+
+  it("explicitly set sort on .sort() call", function () {
+    const { ASC, DESC } = BreadUrlBuilder;
+    const testUrl = new BreadUrlBuilder("http://api.test.org")
+      .addSort("friends", ASC)
+      .addToSort("views", DESC);
+
+    expect(`${testUrl}`).to.equal("https://api.test.org/?sort=friends+-views");
+
+    testUrl.sort('createdAt', DESC)
+    expect(`${testUrl}`).to.equal("https://api.test.org/?sort=-createdAt");
   });
 
   it("adds projection as JSON string", function () {

@@ -28,7 +28,7 @@ class BreadUrlBuilder {
 
   constructor($baseUrl) {
     if (typeof $baseUrl != "string")
-      throw new Error("invalid param - expected String - @BreadUrlBuilder()");
+      throw new Error("invalid argument - expected String - @BreadUrlBuilder()");
     this.#baseUrl = this.#extractHash($baseUrl);
   }
 
@@ -51,8 +51,7 @@ class BreadUrlBuilder {
     if (!this.#_compare.value) return this;
     if (!$options.types.includes(typeof $value))
       throw new Error(
-        `invalid param - expected ${$options.types.join("|")} - @${
-          $options.at
+        `invalid argument - expected ${$options.types.join("|")} - @${$options.at
         }()`
       );
     this.#_compare.invert = false;
@@ -70,14 +69,14 @@ class BreadUrlBuilder {
     ];
     if (!allowedProtocols.includes($protocol))
       throw new Error(
-        `invalid param - expected BreadUrlBuilder.FORCE_HTTP|BreadUrlBuilder.HTTPS - @protocol()`
+        `invalid argument - expected BreadUrlBuilder.FORCE_HTTP|BreadUrlBuilder.HTTPS - @protocol()`
       );
     this.#protocol = $protocol;
     return this;
   }
   port($port) {
     if (typeof $port != "number")
-      throw new Error("invalid param - expected Number - @port()");
+      throw new Error("invalid argument - expected Number - @port()");
     const baseUrl = new URL(this.#baseUrl);
     if ($port != Number(baseUrl.port)) {
       this.#baseUrl = baseUrl.href.replace(
@@ -89,22 +88,22 @@ class BreadUrlBuilder {
   }
   endpoint($endpoint) {
     if (typeof $endpoint != "string")
-      throw new Error("invalid param - expected String - @endpoint()");
+      throw new Error("invalid argument - expected String - @endpoint()");
     this.#endpoint = this.#extractHash($endpoint);
     return this;
   }
   hash($hash) {
     if (typeof $hash != "string")
-      throw new Error("invalid param - expected String - @hash()");
+      throw new Error("invalid argument - expected String - @hash()");
     this.#hash = $hash.startsWith("#") ? $hash : `#${$hash}`;
     return this;
   }
-  setPath($path){
+  setPath($path) {
     return this.clearPath().addPath($path)
   }
   addPath($path) {
     if (!$path.toString)
-      throw new Error("invalid param - expected stringifyable - @addPath()");
+      throw new Error("invalid argument - expected stringifyable - @addPath()");
     this.#paths.push($path);
     return this;
   }
@@ -117,7 +116,7 @@ class BreadUrlBuilder {
       typeof $parameter != "string" ||
       !["string", "number"].includes(typeof $value)
     )
-      throw new Error("invalid param - expected String - @addParameter()");
+      throw new Error("invalid argument - expected String - @addParameter()");
     this.#parameters.set($parameter, $value);
     return this;
   }
@@ -139,50 +138,76 @@ class BreadUrlBuilder {
       return this;
     }
     if (typeof $search != "string")
-      throw new Error("invalid param - expected String - @search()");
+      throw new Error("invalid argument - expected String - @search()");
     this.#parameters.set("search", $search);
     return this;
   }
   limit($limit) {
     if (typeof $limit != "number")
-      throw new Error("invalid param - expected Number - @limit()");
+      throw new Error("invalid argument - expected Number - @limit()");
     this.#parameters.set("limit", $limit);
     return this;
   }
   page($page) {
     if (typeof $page != "number")
-      throw new Error("invalid param - expected Number - @page()");
+      throw new Error("invalid argument - expected Number - @page()");
     this.#parameters.set("page", $page);
     return this;
   }
+  
   /**
    *
-   * @param {String|Array} $sort
+   * @param {String} $sort
    * @param {BreadUrlBuilder.ASC|BreadUrlBuilder.DESC} $order
    * @returns BreadUrlBuilder
    */
-  sort($sort, $order) {
-    if (!$sort)
-      throw new Error("invalid param - expected String|Array - @sort()");
-    const { DESC } = BreadUrlBuilder;
-    if (typeof $sort === "string") $sort = $sort.split(" ");
-    if (!Array.isArray($sort))
-      throw new Error("invalid param - expected String|Array - @sort()");
-    $sort = $sort
-      .map((s) => s.replace(/-/g, ""))
-      .map((s) => ($order === DESC ? `-${s}` : s))
-      .join(" ");
+  addSort($sort, $order) {
+    if( !this.#parameters.has("sort") )
+      return this.sort($sort, $order);
 
-    if (this.#parameters.has("sort")) {
-      $sort = this.#parameters.get("sort").concat(" ", $sort);
-    }
-    this.#parameters.set("sort", $sort);
+    const { ASC, DESC } = BreadUrlBuilder;
+    if (!$sort)
+      throw new Error("invalid argument 'sort' - expected String - @addSort()");
+
+    if (!($order == ASC || $order == DESC))
+      throw new Error("invalid argument 'order' - expected BreadUrlBuilder.ASC|BreadUrlBuilder.DESC - @addSort()");
+
+    const existingSort = new Set(this.#parameters.get("sort").split(" "))
+
+    $sort = $sort
+      .split(" ")
+      .map(s => s.replace(/-/g, ""))
+      
+    $sort.forEach( s => {
+      existingSort.delete(s)
+      existingSort.delete(`-${s}`)
+    })
+
+    $sort = $sort.map(s => ($order === DESC) ? `-${s}` : s)
+    const uniqueFields = [...new Set($sort)]
+    this.#parameters.set("sort", [...existingSort, ...uniqueFields].join(" "));
     return this;
   }
-  sortRaw($sort) {
-    if (typeof $sort != "string")
-      throw new Error("invalid param - expected String - @sortRaw()");
-    this.#parameters.set("sort", $sort);
+  addToSort($sort, $order) {
+    return this.addSort($sort, $order)
+  }
+  sort($sort, $order) {
+    const { ASC, DESC } = BreadUrlBuilder;
+
+    if (!$sort)
+      throw new Error("invalid argument 'sort' - expected String - @sort()");
+
+    if (!($order == ASC || $order == DESC))
+      throw new Error("invalid argument 'order' - expected BreadUrlBuilder.ASC|BreadUrlBuilder.DESC - @sort()");
+
+    $sort = $sort
+      .split(" ")
+      .map(s => s.replace(/-/g, ""))
+      .map(s => ($order === DESC) ? `-${s}` : s)
+
+    const uniqueFields = [...new Set($sort)]
+    this.#parameters.set("sort", uniqueFields.join(" "));
+
     return this;
   }
   /**
@@ -194,7 +219,7 @@ class BreadUrlBuilder {
     this.#_selectCalled = true;
     if (typeof $fields === "string") $fields = $fields.split(" ");
     if (!isArray($fields))
-      throw new Error("invalid param - expected String|Array - @select()");
+      throw new Error("invalid argument - expected String|Array - @select()");
     $fields = $fields.map((field) => field.replace(/-/g, "")).join(" ");
     this.#parameters.set("select", $fields);
     return this;
@@ -208,26 +233,26 @@ class BreadUrlBuilder {
     this.#_excludeCalled = true;
     if (typeof $fields === "string") $fields = $fields.split(" ");
     if (!isArray($fields))
-      throw new Error("invalid param - expected String|Array - @exclude()");
+      throw new Error("invalid argument - expected String|Array - @exclude()");
     $fields = $fields.map((field) => `-${(field.replace(/-/g), "")}`).join(" ");
     this.#parameters.set("select", $fields);
     return this;
   }
   projection($projection) {
     if (typeof $projection != "object")
-      throw new Error("invalid param - expected Object - @projection()");
+      throw new Error("invalid argument - expected Object - @projection()");
     this.#parameters.set("projection", JSON.stringify($projection));
     return this;
   }
   query($query) {
     if (typeof $query != "object")
-      throw new Error("invalid param - expected Object - @query()");
+      throw new Error("invalid argument - expected Object - @query()");
     this.#parameters.set("query", JSON.stringify($query));
     return this;
   }
   populate($populate) {
     if (!(typeof $populate == "object" || isArray($populate)))
-      throw new Error("invalid param - expected Object|Array - @populate()");
+      throw new Error("invalid argument - expected Object|Array - @populate()");
     this.#parameters.set("populate", JSON.stringify($populate));
     return this;
   }
@@ -236,7 +261,7 @@ class BreadUrlBuilder {
 
   with($key) {
     if (typeof $key != "string")
-      throw new Error("invalid param - expected String - @with()");
+      throw new Error("invalid argument - expected String - @with()");
     this.#_compare.history.add($key);
     this.#_compare.value = $key;
     return this;
@@ -245,7 +270,7 @@ class BreadUrlBuilder {
     if (!(this.#parameters.has($key) || this.#_compare.history.has($key)))
       return this;
     if (typeof $key != "string")
-      throw new Error("invalid param - expected String - @withOut()");
+      throw new Error("invalid argument - expected String - @withOut()");
     const params = Array.from(this.#parameters).filter(
       ([key]) => !key.startsWith($key)
     );
@@ -354,8 +379,8 @@ class BreadUrlBuilder {
 
   // --------- GETTER  -----------
 
-  getURL() {
-    return this.get();
+  getURL() { 
+    return this.get(); 
   }
   get() {
     this.#applyProtocol();
