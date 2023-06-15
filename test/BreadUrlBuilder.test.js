@@ -170,6 +170,20 @@ describe("BreadUrlBuilder", function () {
     expect(`${testUrl}`).to.equal("https://api.test.org/?sort=friends+-views+name+angle+reach");
   });
 
+  it("adds unique sorts", function () {
+    const { ASC, DESC } = BreadUrlBuilder;
+    const testUrl = new BreadUrlBuilder("http://api.test.org")
+      .sort("friends friends friends friends friends friends", ASC)
+      .addSort("views", DESC);
+
+    expect(`${testUrl}`).to.equal("https://api.test.org/?sort=friends+-views");
+    
+    testUrl.addSort("    name name name name name     ", ASC)
+
+    expect(testUrl.getSort()).to.equal("friends -views name");
+    expect(`${testUrl}`).to.equal("https://api.test.org/?sort=friends+-views+name");
+  });
+
   it("explicitly set sort on .sort() call", function () {
     const { ASC, DESC } = BreadUrlBuilder;
     const testUrl = new BreadUrlBuilder("http://api.test.org")
