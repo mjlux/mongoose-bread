@@ -1,7 +1,5 @@
-import { Schema } from "mongoose";
-
-const MongooseBreadError = require("./MongooseBreadError");
-const { isValidObjectId } = require("mongoose");
+import { Schema, isValidObjectId } from "mongoose";
+import MongooseBreadError from "./MongooseBreadError";
 
 type RequestValidators = {
   paramsIdIsValid: (paramsIdKey: string, issuer: string) => RequestValidators,
