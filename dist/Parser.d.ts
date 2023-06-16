@@ -1,13 +1,5 @@
 import { ObjectId, Schema } from "mongoose";
-import { PluginOptions, SoftDeleteOptions } from ".";
-type RequestQuery = {
-    select: string;
-    query: string;
-    search: string;
-    projection: ProjectionRecord;
-    limit: number | string;
-};
-type ProjectionRecord = Record<string, number>;
+import { PluginOptions, ProjectionRecord, RequestQuery, SoftDeleteOptions } from ".";
 type IssuerOptions = {
     issuer: string;
 };
@@ -17,7 +9,7 @@ export declare function parseSearchFilter(query: RequestQuery, options: PluginOp
 export declare function parseQueryFilter(query: RequestQuery, schema: Schema): string;
 export declare function parseProjection(query: RequestQuery, options: PluginOptions): ProjectionRecord;
 export declare function parseLimit(query: RequestQuery, options: PluginOptions): number;
-export declare function parseRequestParamsId(request: any, pluginOptions: PluginOptions, options: IssuerOptions): any;
+export declare function parseRequestParamsId(request: any, pluginOptions: PluginOptions, options: IssuerOptions): ObjectId;
 export declare function parseEditRequestBody(request: any, pluginOptions: PluginOptions, options: IssuerOptions): any;
 export declare function parseAddRequestBody(request: any, pluginOptions: PluginOptions, options: IssuerOptions): any[];
 export declare function parseRequestBodyIds(request: any, pluginOptions: PluginOptions, options: IssuerOptions): Array<ObjectId>;

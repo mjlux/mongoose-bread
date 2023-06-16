@@ -1,18 +1,9 @@
 import { ObjectId, Schema } from "mongoose";
 import { checkRequest } from "./RequestValidator";
-import { PluginOptions, SoftDeleteOptions } from ".";
+import { PluginOptions, ProjectionRecord, RequestQuery, SoftDeleteOptions } from ".";
 import MongooseBreadError from "./MongooseBreadError";
 
-type RequestQuery = {
-  select: string,
-  query: string,
-  search: string,
-  projection: ProjectionRecord,
-  limit: number | string,
-}
-
 type SearchQueryRecord = Record<string, { $regex: string, $options: string }>
-type ProjectionRecord = Record<string, number>
 type IssuerOptions = { issuer: string }
 
 export function parseSelect(query: RequestQuery): string {
@@ -85,7 +76,7 @@ export function parseLimit(query: RequestQuery, options: PluginOptions): number 
     : defaultPageSize;
 }
 
-export function parseRequestParamsId(request, pluginOptions: PluginOptions, options: IssuerOptions) {
+export function parseRequestParamsId(request, pluginOptions: PluginOptions, options: IssuerOptions):ObjectId {
   const { paramsIdKey } = pluginOptions;
   const { issuer } = options;
   checkRequest(request)

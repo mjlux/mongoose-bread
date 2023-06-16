@@ -1,11 +1,11 @@
 import { Schema } from "mongoose";
 export type SoftDeleteOptions = {
-    overrideMethods: boolean;
-    validateBeforeDelete: boolean;
-    indexFields: boolean | Array<string>;
-    deletedAt: boolean;
-    deletedBy: boolean;
-    requestUserIdPath: string;
+    overrideMethods?: boolean;
+    validateBeforeDelete?: boolean;
+    indexFields?: boolean | Array<string>;
+    deletedAt?: boolean;
+    deletedBy?: boolean;
+    requestUserIdPath?: string;
 };
 type CustomLabels = {
     docs: string;
@@ -52,5 +52,13 @@ export type PluginOptions = {
 export type MongooseBread = {
     (schema: Schema, pluginOptions: PluginOptions): void;
     options?: PluginOptions;
+};
+export type ProjectionRecord = Record<string, number>;
+export type RequestQuery = {
+    select: string;
+    query: string;
+    search: string;
+    projection: ProjectionRecord;
+    limit: number | string;
 };
 export {};

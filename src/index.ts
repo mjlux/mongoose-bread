@@ -1,22 +1,22 @@
 import { Schema } from "mongoose";
-import { checkSchema } from "./RequestValidator.js";
+import { checkSchema } from "./RequestValidator";
 
-import helperFactory from "./factories/helperFactory.js";
-import browseFactory from "./factories/browseFactory.js";
-import readFactory from "./factories/readFactory.js";
-import editFactory from "./factories/editFactory.js";
-import addFactory from "./factories/addFactory.js";
-import destroyFactory from "./factories/destroyFactory.js";
-import softDeleteFactory from "./factories/softDeleteFactory.js";
-import rehabilitateFactory from "./factories/rehabilitateFactory.js";
+import helperFactory from "./factories/helperFactory";
+import browseFactory from "./factories/browseFactory";
+import readFactory from "./factories/readFactory";
+import editFactory from "./factories/editFactory";
+import addFactory from "./factories/addFactory";
+import destroyFactory from "./factories/destroyFactory";
+import softDeleteFactory from "./factories/softDeleteFactory";
+import rehabilitateFactory from "./factories/rehabilitateFactory";
 
 export type SoftDeleteOptions = {
-  overrideMethods: boolean,
-  validateBeforeDelete: boolean,
-  indexFields: boolean | Array<string>,
-  deletedAt: boolean,
-  deletedBy: boolean,
-  requestUserIdPath: string,
+  overrideMethods?: boolean,
+  validateBeforeDelete?: boolean,
+  indexFields?: boolean | Array<string>,
+  deletedAt?: boolean,
+  deletedBy?: boolean,
+  requestUserIdPath?: string,
 }
 
 type CustomLabels = {
@@ -66,6 +66,16 @@ export type PluginOptions = {
 export type MongooseBread = {
   (schema:Schema, pluginOptions:PluginOptions): void;
   options?:PluginOptions
+}
+
+export type ProjectionRecord = Record<string, number>
+
+export type RequestQuery = {
+  select: string,
+  query: string,
+  search: string,
+  projection: ProjectionRecord,
+  limit: number | string,
 }
 
 const defaultPluginOptions:PluginOptions = {
