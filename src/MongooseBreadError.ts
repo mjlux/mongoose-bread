@@ -3,7 +3,7 @@ export type BreadErrorOptions = {
   details?: string,
   issuer: string,
   statusCode: number,
-  result: object,
+  result?: object,
 };
 
 const defaultOptions:BreadErrorOptions = {
@@ -14,7 +14,7 @@ const defaultOptions:BreadErrorOptions = {
   result: {},
 };
 
-export class MongooseBreadError extends Error {
+export default class MongooseBreadError extends Error {
 
   readonly details: string
   readonly issuer: string
