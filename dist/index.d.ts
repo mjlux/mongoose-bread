@@ -1,0 +1,55 @@
+import { Schema } from "mongoose";
+export type SoftDeleteOptions = {
+    overrideMethods: boolean;
+    validateBeforeDelete: boolean;
+    indexFields: boolean | Array<string>;
+    deletedAt: boolean;
+    deletedBy: boolean;
+    requestUserIdPath: string;
+};
+export type CustomLabels = {
+    docs: string;
+    limit: string;
+    page: string;
+    pagingCounter: string;
+    hasNextPage: string;
+    hasPrevPage: string;
+    nextPage: string;
+    prevPage: string;
+    totalDocs: string;
+    totalPages: string;
+    meta: string;
+    acknowledged: string;
+    modifiedCount: string;
+    deletedCount: string;
+    createdCount: string;
+    readCount: string;
+};
+export type PluginOptions = {
+    defaultPageSize: number;
+    maxPageSize: number;
+    searchableFields: Array<string>;
+    blacklistedFields: Array<string>;
+    paramsIdKey: string;
+    bulkIdsKey: string;
+    bulkDocsKey: string;
+    softDelete: boolean;
+    softDeleteOptions?: SoftDeleteOptions;
+    select: string;
+    projection: Object;
+    collation: Object;
+    pagination: boolean;
+    allowDiskUse: boolean;
+    forceCountFn: boolean;
+    useCustomCountFn: boolean;
+    useEstimatedCount: boolean;
+    lean: boolean;
+    leanWithId: boolean;
+    leanWithout_id: boolean;
+    customFind: "find" | "findOne" | "findDeleted" | "findOneDeleted";
+    customLabels?: CustomLabels;
+};
+export type MongooseBread = {
+    (schema: Schema, pluginOptions: PluginOptions): void;
+    options?: PluginOptions;
+};

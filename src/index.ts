@@ -1,14 +1,71 @@
-const helperFactory = require("./factories/helperFactory.js");
-const browseFactory = require("./factories/browseFactory.js");
-const readFactory = require("./factories/readFactory.js");
-const editFactory = require("./factories/editFactory.js");
-const addFactory = require("./factories/addFactory.js");
-const destroyFactory = require("./factories/destroyFactory.js");
-const softDeleteFactory = require("./factories/softDeleteFactory.js");
-const rehabilitateFactory = require("./factories/rehabilitateFactory.js");
-const { checkSchema } = require("./RequestValidator.js");
+import { Schema } from "mongoose";
 
-const defaultPluginOptions = {
+import helperFactory  from "./factories/helperFactory.js";
+import browseFactory  from "./factories/browseFactory.js";
+import readFactory  from "./factories/readFactory.js";
+import editFactory  from "./factories/editFactory.js";
+import addFactory  from "./factories/addFactory.js";
+import destroyFactory  from "./factories/destroyFactory.js";
+import softDeleteFactory  from "./factories/softDeleteFactory.js";
+import rehabilitateFactory  from "./factories/rehabilitateFactory.js";
+import { checkSchema }  from "./RequestValidator.js";
+
+export type SoftDeleteOptions = {
+  overrideMethods: boolean,
+  validateBeforeDelete: boolean,
+  indexFields: boolean | Array<string>,
+  deletedAt: boolean,
+  deletedBy: boolean,
+  requestUserIdPath: string,
+}
+
+export type CustomLabels = {
+  docs: string,
+  limit: string,
+  page: string,
+  pagingCounter: string,
+  hasNextPage: string,
+  hasPrevPage: string,
+  nextPage: string,
+  prevPage: string,
+  totalDocs: string,
+  totalPages: string,
+  meta: string,
+  acknowledged: string,
+  modifiedCount: string,
+  deletedCount: string,
+  createdCount: string,
+  readCount: string,
+}
+
+export type PluginOptions = {
+  defaultPageSize: number,
+  maxPageSize: number,
+  searchableFields: Array<string>,
+  blacklistedFields: Array<string>,
+  paramsIdKey: string,
+  bulkIdsKey: string,
+  bulkDocsKey: string,
+  softDelete: boolean,
+  softDeleteOptions?: SoftDeleteOptions,
+
+  /* Inherited from mongoose-paginate-v2 */
+  select: string,
+  projection: Object,
+  collation: Object,
+  pagination: boolean,
+  allowDiskUse: boolean,
+  forceCountFn: boolean,
+  useCustomCountFn: boolean,
+  useEstimatedCount: boolean,
+  lean: boolean,
+  leanWithId: boolean, // override mongoose-paginate-v2 default - was true
+  leanWithout_id: boolean, // additional mongoose-bread option to remove '_id' from lean results
+  customFind: "find" | "findOne" | "findDeleted" | "findOneDeleted",
+  customLabels?: CustomLabels,
+};
+
+const defaultPluginOptions:PluginOptions = {
   defaultPageSize: 10,
   maxPageSize: 100,
   searchableFields: [],
@@ -59,16 +116,21 @@ const defaultPluginOptions = {
   },
 };
 
-function mongooseBread(schema, pluginOptions) {
-  const mongooseBreadOptions = mongooseBread.options || {};
+export type MongooseBread = {
+  (schema:Schema, pluginOptions:PluginOptions): void;
+  options?:PluginOptions
+}
 
-  const _softDeleteOptions = {
+const mongooseBread:MongooseBread = function (schema, pluginOptions) {
+  const mongooseBreadOptions:PluginOptions = mongooseBread.options;
+
+  const _softDeleteOptions:SoftDeleteOptions = {
     ...defaultPluginOptions.softDeleteOptions,
-    ...mongooseBreadOptions.softDeleteOptions,
+    ...mongooseBreadOptions?.softDeleteOptions,
     ...pluginOptions.softDeleteOptions,
   };
 
-  const _pluginOptions = {
+  const _pluginOptions:PluginOptions = {
     ...defaultPluginOptions,
     ...mongooseBreadOptions,
     ...pluginOptions,
