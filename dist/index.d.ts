@@ -1,5 +1,5 @@
 import { Schema } from "mongoose";
-type SoftDeleteOptions = {
+export type SoftDeleteOptions = {
     overrideMethods: boolean;
     validateBeforeDelete: boolean;
     indexFields: boolean | Array<string>;
@@ -36,8 +36,8 @@ export type PluginOptions = {
     softDelete: boolean;
     softDeleteOptions?: SoftDeleteOptions;
     select: string;
-    projection: Object;
-    collation: Object;
+    projection: Record<string, number>;
+    collation: object;
     pagination: boolean;
     allowDiskUse: boolean;
     forceCountFn: boolean;
