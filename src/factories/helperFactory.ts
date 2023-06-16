@@ -79,7 +79,7 @@ export type HelperMethods = {
 export type SoftDeleteHelperMethods = {
   createBrowseDeletedOptions: (request) => BulkReadOptions,
   createReadDeletedOptions: (request) => PaginationOptions & SingleReadOptions,
-  createRehabilitateOptions(request): (request) => PaginationOptions & (SingleRehabilitateOptions | BulkRehabilitateOptions),
+  createRehabilitateOptions: (request) => PaginationOptions & (SingleRehabilitateOptions | BulkRehabilitateOptions),
 };
 
 function convertStringToBoolean(str: string): boolean {

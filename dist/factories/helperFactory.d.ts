@@ -83,7 +83,7 @@ export type HelperMethods = {
 export type SoftDeleteHelperMethods = {
     createBrowseDeletedOptions: (request: any) => BulkReadOptions;
     createReadDeletedOptions: (request: any) => PaginationOptions & SingleReadOptions;
-    createRehabilitateOptions(request: any): (request: any) => PaginationOptions & (SingleRehabilitateOptions | BulkRehabilitateOptions);
+    createRehabilitateOptions: (request: any) => PaginationOptions & (SingleRehabilitateOptions | BulkRehabilitateOptions);
 };
 export default function Factory(schema: Schema, pluginOptions: PluginOptions): HelperMethods | (HelperMethods & SoftDeleteHelperMethods);
 export {};
