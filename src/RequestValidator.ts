@@ -1,11 +1,23 @@
+import { Schema } from "mongoose";
+
 const MongooseBreadError = require("./MongooseBreadError");
 const { isValidObjectId } = require("mongoose");
 
-/**
- * @param {Object} request
- * @returns {Object}
- */
-function checkRequest(request) {
+type RequestValidators = {
+  paramsIdIsValid: (paramsIdKey: string, issuer: string) => RequestValidators,
+  bodyIsNotAnArray: (issuer: string) => RequestValidators,
+  hasBody: (issuer: string) => RequestValidators,
+  hasBodyProperty: (property: string, issuer: string) => RequestValidators,
+  bodyPropertyIsArray: (property: string, issuer: string) => RequestValidators,
+  bodyPropertyArrayIncludesOnlyObjectIds: (property: string, issuer: string) => RequestValidators,
+}
+
+type SchemaValidators = {
+  hasMongoosePaginateV2AlreadyInstalled: (issuer: string) => SchemaValidators,
+  hasMongooseDeleteAlreadyInstalled: (issuer: string) => SchemaValidators,
+}
+
+export function checkRequest(request): RequestValidators {
   const validators = {
     paramsIdIsValid(paramsIdKey, issuer) {
       if (!request.params || !request.params[paramsIdKey]) {
@@ -96,7 +108,8 @@ function checkRequest(request) {
   return validators;
 }
 
-function checkSchema(schema) {
+
+export function checkSchema(schema: Schema): SchemaValidators {
   const validators = {
     hasMongoosePaginateV2AlreadyInstalled(issuer) {
       if (schema.statics.paginate) {
