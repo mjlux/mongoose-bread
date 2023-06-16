@@ -1,14 +1,28 @@
-const { checkRequest } = require("./RequestValidator");
-const MongooseBreadError = require("./MongooseBreadError");
+import { ObjectId, Schema } from "mongoose";
+import { checkRequest } from "./RequestValidator";
+import { PluginOptions, SoftDeleteOptions } from ".";
+import MongooseBreadError from "./MongooseBreadError";
 
-function parseSelect(query) {
-  const fields = query.select
+type RequestQuery = {
+  select: string,
+  query: string,
+  search: string,
+  projection: ProjectionRecord,
+  limit: number | string,
+}
+
+type SearchQueryRecord = Record<string, { $regex: string, $options: string }>
+type ProjectionRecord = Record<string, number>
+type IssuerOptions = { issuer: string }
+
+export function parseSelect(query: RequestQuery): string {
+  const fields: Array<string> = query.select
     ? Array.from(new Set([...query.select.split(",")]))
     : [];
   return fields.join(" ");
 }
 
-function parseQuery(query, options, schema) {
+export function parseQuery(query: RequestQuery, options: PluginOptions, schema: Schema): string {
   if (query.query) return query.query;
 
   return query.search
@@ -16,13 +30,12 @@ function parseQuery(query, options, schema) {
     : parseQueryFilter(query, schema);
 }
 
-function parseSearchFilter(query, options) {
+export function parseSearchFilter(query: RequestQuery, options: PluginOptions): string {
   const { searchableFields } = options;
   if (!Array.isArray(searchableFields) || !searchableFields.length) {
     throw new MongooseBreadError({
       message: "Search is not availabe for this resource",
-      details:
-        'To enable search provide an "searchableFields" Array to the plugin registration options',
+      details: 'To enable search provide an "searchableFields" Array to the plugin registration options',
       statusCode: 404,
       issuer: `MongooseBreadHelper parseSearchFilter`,
     });
@@ -35,12 +48,12 @@ function parseSearchFilter(query, options) {
         return { [field]: { $regex: searchTerm, $options: "i" } };
       });
       return fieldQueriesCollection.concat(fieldQueries);
-    }, []);
+    }, new Array<SearchQueryRecord>);
 
   return JSON.stringify({ $or: searchQuery });
 }
 
-function parseQueryFilter(query, schema) {
+export function parseQueryFilter(query: RequestQuery, schema: Schema): string {
   const keys = Object.keys(schema.paths);
   const sanitizedFilter = Object.keys(query).reduce(
     (filter, key) => {
@@ -55,7 +68,7 @@ function parseQueryFilter(query, schema) {
   );
 }
 
-function parseProjection(query, options) {
+export function parseProjection(query: RequestQuery, options: PluginOptions): ProjectionRecord {
   if (query.projection) return query.projection;
   if (!Array.isArray(options.blacklistedFields)) return {};
   return options.blacklistedFields.reduce(
@@ -64,14 +77,15 @@ function parseProjection(query, options) {
   );
 }
 
-function parseLimit(query, options) {
+export function parseLimit(query: RequestQuery, options: PluginOptions): number {
   const { maxPageSize, defaultPageSize } = options;
+  const _limit = (typeof query.limit == 'string') ? parseInt(query.limit) : query.limit
   return query.limit
-    ? Math.min(parseInt(query.limit), maxPageSize)
+    ? Math.min(_limit, maxPageSize)
     : defaultPageSize;
 }
 
-function parseRequestParamsId(request, pluginOptions, options) {
+export function parseRequestParamsId(request, pluginOptions: PluginOptions, options: IssuerOptions) {
   const { paramsIdKey } = pluginOptions;
   const { issuer } = options;
   checkRequest(request)
@@ -80,7 +94,7 @@ function parseRequestParamsId(request, pluginOptions, options) {
   return request.params[paramsIdKey];
 }
 
-function parseEditRequestBody(request, pluginOptions, options) {
+export function parseEditRequestBody(request, pluginOptions: PluginOptions, options: IssuerOptions) {
   const { bulkDocsKey } = pluginOptions;
   const { issuer } = options;
 
@@ -95,7 +109,7 @@ function parseEditRequestBody(request, pluginOptions, options) {
   }, {});
 }
 
-function parseAddRequestBody(request, pluginOptions, options) {
+export function parseAddRequestBody(request, pluginOptions: PluginOptions, options: IssuerOptions) {
   const { bulkDocsKey } = pluginOptions;
   const { issuer } = options;
 
@@ -107,7 +121,7 @@ function parseAddRequestBody(request, pluginOptions, options) {
   return [...request.body[bulkDocsKey]];
 }
 
-function parseRequestBodyIds(request, pluginOptions, options) {
+export function parseRequestBodyIds(request, pluginOptions: PluginOptions, options: IssuerOptions): Array<ObjectId> {
   const { bulkIdsKey } = pluginOptions;
   const { issuer } = options;
 
@@ -123,7 +137,7 @@ function parseRequestBodyIds(request, pluginOptions, options) {
   return bodyIds;
 }
 
-function parseRequestUserIdPath(request, options) {
+export function parseRequestUserIdPath(request, options: SoftDeleteOptions): ObjectId {
   try {
     const { requestUserIdPath } = options;
     const userId = requestUserIdPath.split(".").reduce((user, key) => {
@@ -140,6 +154,7 @@ function parseRequestUserIdPath(request, options) {
     throw new MongooseBreadError({
       message: error.message,
       details: JSON.stringify({ request, options }),
+      statusCode: 400,
       issuer: `MongooseBreadHelper parseRequestUserIdPath`,
     });
   }

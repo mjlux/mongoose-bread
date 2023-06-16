@@ -1,0 +1,25 @@
+import { ObjectId, Schema } from "mongoose";
+import { PluginOptions, SoftDeleteOptions } from ".";
+type RequestQuery = {
+    select: string;
+    query: string;
+    search: string;
+    projection: ProjectionRecord;
+    limit: number | string;
+};
+type ProjectionRecord = Record<string, number>;
+type IssuerOptions = {
+    issuer: string;
+};
+export declare function parseSelect(query: RequestQuery): string;
+export declare function parseQuery(query: RequestQuery, options: PluginOptions, schema: Schema): string;
+export declare function parseSearchFilter(query: RequestQuery, options: PluginOptions): string;
+export declare function parseQueryFilter(query: RequestQuery, schema: Schema): string;
+export declare function parseProjection(query: RequestQuery, options: PluginOptions): ProjectionRecord;
+export declare function parseLimit(query: RequestQuery, options: PluginOptions): number;
+export declare function parseRequestParamsId(request: any, pluginOptions: PluginOptions, options: IssuerOptions): any;
+export declare function parseEditRequestBody(request: any, pluginOptions: PluginOptions, options: IssuerOptions): any;
+export declare function parseAddRequestBody(request: any, pluginOptions: PluginOptions, options: IssuerOptions): any[];
+export declare function parseRequestBodyIds(request: any, pluginOptions: PluginOptions, options: IssuerOptions): Array<ObjectId>;
+export declare function parseRequestUserIdPath(request: any, options: SoftDeleteOptions): ObjectId;
+export {};
