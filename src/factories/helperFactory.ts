@@ -19,51 +19,55 @@ type BreadSoftDeleteHelperOptions = {
   issuer: string
 }
 
-type PaginationOptions = PaginateOptions & PluginOptions & BreadSoftDeleteHelperOptions
+export type PaginationOptions = PaginateOptions & PluginOptions & BreadSoftDeleteHelperOptions
 
-type SingleReadOptions = {
+export type SingleReadOptions = {
   query: FilterQuery<{ _id: ObjectId }>,
   select: string,
   customFind: string,
 }
-type BulkReadOptions = {
+export type BulkReadOptions = {
   query: FilterQuery<RequestQuery>,
   paginateOptions: PaginationOptions,
 }
-type SingleEditOptions = {
+export type SingleEditOptions = {
   query: FilterQuery<{ _id: ObjectId }>,
   payload: {},
+  bulk?: boolean,
 }
-type BulkEditOptions = {
+export type BulkEditOptions = {
   query: FilterQuery<{ _id: { $in: Array<ObjectId> } }>,
   payload: {},
   bulk: boolean,
 }
-type SingleAddOptions = {
+export type SingleAddOptions = {
   payload: {},
+  bulk?: boolean,
 }
-type BulkAddOptions = {
+export type BulkAddOptions = {
   payload: Array<unknown>,
   bulk: boolean,
 }
-type SingleDeleteOptions = {
+export type SingleDeleteOptions = {
   query: FilterQuery<{ _id: ObjectId }>,
   userId: ObjectId | null,
+  bulk?: boolean,
 }
-type BulkDeleteOptions = {
+export type BulkDeleteOptions = {
   query: FilterQuery<{ _id: { $in: Array<ObjectId> } }>,
   userId: ObjectId | null,
   bulk: boolean,
 }
-type SingleRehabilitateOptions = {
+export type SingleRehabilitateOptions = {
   query: FilterQuery<{ _id: ObjectId, deleted: boolean }>,
+  bulk?: boolean,
 }
-type BulkRehabilitateOptions = {
+export type BulkRehabilitateOptions = {
   query: FilterQuery<{ _id: { $in: Array<ObjectId> }, deleted: boolean }>,
   bulk: boolean,
 }
 
-type HelperMethods = {
+export type HelperMethods = {
   createBrowseOptions: (request) => BulkReadOptions,
   createReadOptions: (request) => PaginationOptions & SingleReadOptions,
   createEditOptions: (request) => PaginationOptions & (SingleEditOptions | BulkEditOptions),
@@ -72,7 +76,7 @@ type HelperMethods = {
   createDeleteOptions: (request) => PaginationOptions & (SingleDeleteOptions | BulkDeleteOptions),
 }
 
-type SoftDeleteHelperMethods = {
+export type SoftDeleteHelperMethods = {
   createBrowseDeletedOptions: (request) => BulkReadOptions,
   createReadDeletedOptions: (request) => PaginationOptions & SingleReadOptions,
   createRehabilitateOptions(request): (request) => PaginationOptions & (SingleRehabilitateOptions | BulkRehabilitateOptions),
