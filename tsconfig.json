@@ -1,13 +1,13 @@
 {
     "include": [
-        "./src/**/*.ts", 
-        "./tests/**/*.ts"
+        "./src/**/*", 
     ],
     "compilerOptions": {
         "module": "commonjs",
         "declaration": true,
         "emitDeclarationOnly": true,
         "isolatedModules": true,
+        "esModuleInterop": true,
         "outDir": "./dist",
         "allowJs": false,
         "target": "ES6"
