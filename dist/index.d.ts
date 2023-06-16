@@ -53,12 +53,11 @@ export type MongooseBread = {
     (schema: Schema, pluginOptions: PluginOptions): void;
     options?: PluginOptions;
 };
-export type ProjectionRecord = Record<string, number>;
 export type RequestQuery = {
     select: string;
     query: string;
     search: string;
-    projection: ProjectionRecord;
+    projection: Record<string, number>;
     limit: number | string;
 };
 export {};

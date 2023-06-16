@@ -1,6 +1,6 @@
 import { ObjectId, Schema } from "mongoose";
 import { checkRequest } from "./RequestValidator";
-import { PluginOptions, ProjectionRecord, RequestQuery, SoftDeleteOptions } from ".";
+import { PluginOptions, RequestQuery, SoftDeleteOptions } from ".";
 import MongooseBreadError from "./MongooseBreadError";
 
 type SearchQueryRecord = Record<string, { $regex: string, $options: string }>
@@ -59,7 +59,7 @@ export function parseQueryFilter(query: RequestQuery, schema: Schema): string {
   );
 }
 
-export function parseProjection(query: RequestQuery, options: PluginOptions): ProjectionRecord {
+export function parseProjection(query: RequestQuery, options: PluginOptions): Record<string, number> {
   if (query.projection) return query.projection;
   if (!Array.isArray(options.blacklistedFields)) return {};
   return options.blacklistedFields.reduce(
@@ -85,7 +85,7 @@ export function parseRequestParamsId(request, pluginOptions: PluginOptions, opti
   return request.params[paramsIdKey];
 }
 
-export function parseEditRequestBody(request, pluginOptions: PluginOptions, options: IssuerOptions) {
+export function parseEditRequestBody(request, pluginOptions: PluginOptions, options: IssuerOptions):Record<string, unknown> {
   const { bulkDocsKey } = pluginOptions;
   const { issuer } = options;
 
@@ -100,7 +100,7 @@ export function parseEditRequestBody(request, pluginOptions: PluginOptions, opti
   }, {});
 }
 
-export function parseAddRequestBody(request, pluginOptions: PluginOptions, options: IssuerOptions) {
+export function parseAddRequestBody(request, pluginOptions: PluginOptions, options: IssuerOptions):Array<Record<string,unknown>> {
   const { bulkDocsKey } = pluginOptions;
   const { issuer } = options;
 
