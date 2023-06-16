@@ -1,15 +1,18 @@
 {
     "include": [
-        "src/**/*.ts", 
-        "tests/**/*.ts"
+        "./src/**/*.ts", 
+        "./tests/**/*.ts"
     ],
     "compilerOptions": {
         "module": "commonjs",
         "declaration": true,
         "emitDeclarationOnly": true,
-        "isolatedModules": true
+        "isolatedModules": true,
+        "outDir": "./dist",
+        "allowJs": false,
+        "target": "ES6"
     },
     "exclude": [
-        "node_modules"
+        "./node_modules/**/*"
     ]
 }
