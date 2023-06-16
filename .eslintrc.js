@@ -12,6 +12,17 @@ module.exports = {
   parser: 'babel-eslint',
   rules: {
     'linebreak-style': ['warn', 'unix'],
+    'max-len': [
+      'error',
+      {
+        'code': 80,
+        'tabWidth': 2,
+        'ignoreComments': true, //'comments': 80
+        'ignoreUrls': true,
+        'ignoreStrings': true,
+        'ignoreTemplateLiterals': true
+      }
+    ]
   },
   overrides: [
     {
