@@ -1,14 +1,14 @@
 import { Schema } from "mongoose";
 
-import helperFactory  from "./factories/helperFactory.js";
-import browseFactory  from "./factories/browseFactory.js";
-import readFactory  from "./factories/readFactory.js";
-import editFactory  from "./factories/editFactory.js";
-import addFactory  from "./factories/addFactory.js";
-import destroyFactory  from "./factories/destroyFactory.js";
-import softDeleteFactory  from "./factories/softDeleteFactory.js";
-import rehabilitateFactory  from "./factories/rehabilitateFactory.js";
-import { checkSchema }  from "./RequestValidator.js";
+import helperFactory from "./factories/helperFactory.js";
+import browseFactory from "./factories/browseFactory.js";
+import readFactory from "./factories/readFactory.js";
+import editFactory from "./factories/editFactory.js";
+import addFactory from "./factories/addFactory.js";
+import destroyFactory from "./factories/destroyFactory.js";
+import softDeleteFactory from "./factories/softDeleteFactory.js";
+import rehabilitateFactory from "./factories/rehabilitateFactory.js";
+import { checkSchema } from "./RequestValidator.js";
 
 export type SoftDeleteOptions = {
   overrideMethods: boolean,
@@ -176,5 +176,5 @@ const mongooseBread:MongooseBread = function (schema, pluginOptions) {
 
 module.exports = mongooseBread;
 module.exports.mongooseBread = mongooseBread;
-module.exports.MongooseBreadError = require("./MongooseBreadError");
-module.exports.BreadUrlBuilder = require("./BreadUrlBuilder");
+module.exports.MongooseBreadError = require("./MongooseBreadError.js");
+module.exports.BreadUrlBuilder = require("./BreadUrlBuilder.js");
