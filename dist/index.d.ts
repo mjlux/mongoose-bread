@@ -1,5 +1,5 @@
 import { Schema } from "mongoose";
-export type SoftDeleteOptions = {
+type SoftDeleteOptions = {
     overrideMethods: boolean;
     validateBeforeDelete: boolean;
     indexFields: boolean | Array<string>;
@@ -7,7 +7,7 @@ export type SoftDeleteOptions = {
     deletedBy: boolean;
     requestUserIdPath: string;
 };
-export type CustomLabels = {
+type CustomLabels = {
     docs: string;
     limit: string;
     page: string;
@@ -53,3 +53,4 @@ export type MongooseBread = {
     (schema: Schema, pluginOptions: PluginOptions): void;
     options?: PluginOptions;
 };
+export {};

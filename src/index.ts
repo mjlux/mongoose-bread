@@ -1,4 +1,5 @@
 import { Schema } from "mongoose";
+import { checkSchema } from "./RequestValidator.js";
 
 import helperFactory from "./factories/helperFactory.js";
 import browseFactory from "./factories/browseFactory.js";
@@ -8,9 +9,8 @@ import addFactory from "./factories/addFactory.js";
 import destroyFactory from "./factories/destroyFactory.js";
 import softDeleteFactory from "./factories/softDeleteFactory.js";
 import rehabilitateFactory from "./factories/rehabilitateFactory.js";
-import { checkSchema } from "./RequestValidator.js";
 
-export type SoftDeleteOptions = {
+type SoftDeleteOptions = {
   overrideMethods: boolean,
   validateBeforeDelete: boolean,
   indexFields: boolean | Array<string>,
@@ -19,7 +19,7 @@ export type SoftDeleteOptions = {
   requestUserIdPath: string,
 }
 
-export type CustomLabels = {
+type CustomLabels = {
   docs: string,
   limit: string,
   page: string,
@@ -48,8 +48,6 @@ export type PluginOptions = {
   bulkDocsKey: string,
   softDelete: boolean,
   softDeleteOptions?: SoftDeleteOptions,
-
-  /* Inherited from mongoose-paginate-v2 */
   select: string,
   projection: Object,
   collation: Object,
@@ -59,11 +57,16 @@ export type PluginOptions = {
   useCustomCountFn: boolean,
   useEstimatedCount: boolean,
   lean: boolean,
-  leanWithId: boolean, // override mongoose-paginate-v2 default - was true
-  leanWithout_id: boolean, // additional mongoose-bread option to remove '_id' from lean results
+  leanWithId: boolean,
+  leanWithout_id: boolean,
   customFind: "find" | "findOne" | "findDeleted" | "findOneDeleted",
   customLabels?: CustomLabels,
-};
+}
+
+export type MongooseBread = {
+  (schema:Schema, pluginOptions:PluginOptions): void;
+  options?:PluginOptions
+}
 
 const defaultPluginOptions:PluginOptions = {
   defaultPageSize: 10,
@@ -115,11 +118,6 @@ const defaultPluginOptions:PluginOptions = {
     readCount: "readCount",
   },
 };
-
-export type MongooseBread = {
-  (schema:Schema, pluginOptions:PluginOptions): void;
-  options?:PluginOptions
-}
 
 const mongooseBread:MongooseBread = function (schema, pluginOptions) {
   const mongooseBreadOptions:PluginOptions = mongooseBread.options;
