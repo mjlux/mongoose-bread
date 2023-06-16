@@ -5,25 +5,26 @@ type BreadSoftDeleteHelperOptions = {
     customFind: string;
     issuer: string;
 };
-type PaginationOptions = PaginateOptions & PluginOptions & BreadSoftDeleteHelperOptions;
-type SingleReadOptions = {
+export type PaginationOptions = PaginateOptions & PluginOptions & BreadSoftDeleteHelperOptions;
+export type SingleReadOptions = {
     query: FilterQuery<{
         _id: ObjectId;
     }>;
     select: string;
     customFind: string;
 };
-type BulkReadOptions = {
+export type BulkReadOptions = {
     query: FilterQuery<RequestQuery>;
     paginateOptions: PaginationOptions;
 };
-type SingleEditOptions = {
+export type SingleEditOptions = {
     query: FilterQuery<{
         _id: ObjectId;
     }>;
     payload: {};
+    bulk?: boolean;
 };
-type BulkEditOptions = {
+export type BulkEditOptions = {
     query: FilterQuery<{
         _id: {
             $in: Array<ObjectId>;
@@ -32,20 +33,22 @@ type BulkEditOptions = {
     payload: {};
     bulk: boolean;
 };
-type SingleAddOptions = {
+export type SingleAddOptions = {
     payload: {};
+    bulk?: boolean;
 };
-type BulkAddOptions = {
+export type BulkAddOptions = {
     payload: Array<unknown>;
     bulk: boolean;
 };
-type SingleDeleteOptions = {
+export type SingleDeleteOptions = {
     query: FilterQuery<{
         _id: ObjectId;
     }>;
     userId: ObjectId | null;
+    bulk?: boolean;
 };
-type BulkDeleteOptions = {
+export type BulkDeleteOptions = {
     query: FilterQuery<{
         _id: {
             $in: Array<ObjectId>;
@@ -54,13 +57,14 @@ type BulkDeleteOptions = {
     userId: ObjectId | null;
     bulk: boolean;
 };
-type SingleRehabilitateOptions = {
+export type SingleRehabilitateOptions = {
     query: FilterQuery<{
         _id: ObjectId;
         deleted: boolean;
     }>;
+    bulk?: boolean;
 };
-type BulkRehabilitateOptions = {
+export type BulkRehabilitateOptions = {
     query: FilterQuery<{
         _id: {
             $in: Array<ObjectId>;
@@ -69,14 +73,14 @@ type BulkRehabilitateOptions = {
     }>;
     bulk: boolean;
 };
-type HelperMethods = {
+export type HelperMethods = {
     createBrowseOptions: (request: any) => BulkReadOptions;
     createReadOptions: (request: any) => PaginationOptions & SingleReadOptions;
     createEditOptions: (request: any) => PaginationOptions & (SingleEditOptions | BulkEditOptions);
     createAddOptions: (request: any) => PaginationOptions & (SingleAddOptions | BulkAddOptions);
     createDeleteOptions: (request: any) => PaginationOptions & (SingleDeleteOptions | BulkDeleteOptions);
 };
-type SoftDeleteHelperMethods = {
+export type SoftDeleteHelperMethods = {
     createBrowseDeletedOptions: (request: any) => BulkReadOptions;
     createReadDeletedOptions: (request: any) => PaginationOptions & SingleReadOptions;
     createRehabilitateOptions(request: any): (request: any) => PaginationOptions & (SingleRehabilitateOptions | BulkRehabilitateOptions);
