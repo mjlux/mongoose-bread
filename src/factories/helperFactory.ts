@@ -1,5 +1,5 @@
-const { PaginationParameters } = require("mongoose-paginate-v2");
-const {
+import { PaginationParameters } from "mongoose-paginate-v2";
+import {
   parseSelect,
   parseQuery,
   parseProjection,
@@ -9,15 +9,82 @@ const {
   parseAddRequestBody,
   parseRequestBodyIds,
   parseRequestUserIdPath,
-} = require("../Parser");
+} from "../Parser";
+import { PluginOptions, RequestQuery } from "..";
+import { FilterQuery, ObjectId, PaginateOptions, Schema } from "mongoose";
 
-function convertStringToBoolean(str) {
-  return typeof str === "string" ? str === "true" || str === "1" : false;
+type BreadSoftDeleteHelperOptions = {
+  customCount: string,
+  customFind: string,
+  issuer: string
 }
 
-function Factory(schema, pluginOptions = {}) {
+type PaginationOptions = PaginateOptions & PluginOptions & BreadSoftDeleteHelperOptions
+
+type SingleReadOptions = {
+  query: FilterQuery<{ _id: ObjectId }>,
+  select: string,
+  customFind: string,
+}
+type BulkReadOptions = {
+  query: FilterQuery<RequestQuery>,
+  paginateOptions: PaginationOptions,
+}
+type SingleEditOptions = {
+  query: FilterQuery<{ _id: ObjectId }>,
+  payload: {},
+}
+type BulkEditOptions = {
+  query: FilterQuery<{ _id: { $in: Array<ObjectId> } }>,
+  payload: {},
+  bulk: boolean,
+}
+type SingleAddOptions = {
+  payload: {},
+}
+type BulkAddOptions = {
+  payload: Array<unknown>,
+  bulk: boolean,
+}
+type SingleDeleteOptions = {
+  query: FilterQuery<{ _id: ObjectId }>,
+  userId: ObjectId | null,
+}
+type BulkDeleteOptions = {
+  query: FilterQuery<{ _id: { $in: Array<ObjectId> } }>,
+  userId: ObjectId | null,
+  bulk: boolean,
+}
+type SingleRehabilitateOptions = {
+  query: FilterQuery<{ _id: ObjectId, deleted: boolean }>,
+}
+type BulkRehabilitateOptions = {
+  query: FilterQuery<{ _id: { $in: Array<ObjectId> }, deleted: boolean }>,
+  bulk: boolean,
+}
+
+type HelperMethods = {
+  createBrowseOptions: (request) => BulkReadOptions,
+  createReadOptions: (request) => PaginationOptions & SingleReadOptions,
+  createEditOptions: (request) => PaginationOptions & (SingleEditOptions | BulkEditOptions),
+
+  createAddOptions: (request) => PaginationOptions & (SingleAddOptions | BulkAddOptions),
+  createDeleteOptions: (request) => PaginationOptions & (SingleDeleteOptions | BulkDeleteOptions),
+}
+
+type SoftDeleteHelperMethods = {
+  createBrowseDeletedOptions: (request) => BulkReadOptions,
+  createReadDeletedOptions: (request) => PaginationOptions & SingleReadOptions,
+  createRehabilitateOptions(request): (request) => PaginationOptions & (SingleRehabilitateOptions | BulkRehabilitateOptions),
+};
+
+function convertStringToBoolean(str: string): boolean {
+  return (typeof str === "string") ? (str === "true" || str === "1") : false;
+}
+
+export default function Factory(schema: Schema, pluginOptions: PluginOptions): HelperMethods | (HelperMethods & SoftDeleteHelperMethods) {
   // read - single or bulk (browse)
-  function createSingleReadOptions(request) {
+  function createSingleReadOptions(request):SingleReadOptions {
     const issuer =
       request.__breadSoftDeleteHelperOptions?.issuer || "createReadOptions";
     const customFind =
@@ -32,7 +99,7 @@ function Factory(schema, pluginOptions = {}) {
       customFind,
     };
   }
-  function createBulkReadOptions(request) {
+  function createBulkReadOptions(request): BulkReadOptions {
     const _options = Object.assign(
       {},
       pluginOptions,
@@ -51,7 +118,7 @@ function Factory(schema, pluginOptions = {}) {
       },
     };
     delete _request.query.options; // !!! leads to inifinite recursive loop if set
-    const paginationParams = new PaginationParameters(_request);
+    const paginationParams = new PaginationParameters<unknown, PaginationOptions>(_request);
     const query = paginationParams.getQuery();
     const paginateOptions = paginationParams.getOptions();
     paginateOptions.customFind = _options.customFind || "find";
@@ -66,7 +133,7 @@ function Factory(schema, pluginOptions = {}) {
     };
   }
   // edit - single or bulk
-  function createSingleEditOptions(request) {
+  function createSingleEditOptions(request):SingleEditOptions {
     const idParam = parseRequestParamsId(request, pluginOptions, {
       issuer: "createEditOptions",
     });
@@ -76,7 +143,7 @@ function Factory(schema, pluginOptions = {}) {
       query: { _id: idParam },
     };
   }
-  function createBulkEditOptions(request) {
+  function createBulkEditOptions(request):BulkEditOptions {
     const bodyIds = parseRequestBodyIds(request, pluginOptions, {
       issuer: "createEditOptions",
     });
@@ -91,13 +158,13 @@ function Factory(schema, pluginOptions = {}) {
     };
   }
   // add - single or bulk
-  function createSingleAddOptions(request) {
+  function createSingleAddOptions(request):SingleAddOptions {
     const newDocument = request.body;
     return {
       payload: newDocument,
     };
   }
-  function createBulkAddOptions(request) {
+  function createBulkAddOptions(request):BulkAddOptions {
     const newDocuments = parseAddRequestBody(request, pluginOptions, {
       issuer: "createAddOptions",
     });
@@ -107,7 +174,7 @@ function Factory(schema, pluginOptions = {}) {
     };
   }
   // delete - single or bulk
-  function createSingleDeleteOptions(request) {
+  function createSingleDeleteOptions(request):SingleDeleteOptions {
     const idParam = parseRequestParamsId(request, pluginOptions, {
       issuer: "createDeleteOptions",
     });
@@ -124,7 +191,7 @@ function Factory(schema, pluginOptions = {}) {
       userId,
     };
   }
-  function createBulkDeleteOptions(request) {
+  function createBulkDeleteOptions(request):BulkDeleteOptions {
     const { softDelete, softDeleteOptions } = pluginOptions;
     const { deletedBy, requestUserIdPath } = softDeleteOptions;
 
@@ -144,7 +211,7 @@ function Factory(schema, pluginOptions = {}) {
     };
   }
   // rehabilitate - single or bulk
-  function createSingleRehabilitateOptions(request) {
+  function createSingleRehabilitateOptions(request):SingleRehabilitateOptions {
     const idParam = parseRequestParamsId(request, pluginOptions, {
       issuer: "createRehabilitateOptions",
     });
@@ -152,7 +219,7 @@ function Factory(schema, pluginOptions = {}) {
       query: { _id: idParam, deleted: true },
     };
   }
-  function createBulkRehabilitateOptions(request) {
+  function createBulkRehabilitateOptions(request):BulkRehabilitateOptions {
     const bodyIds = parseRequestBodyIds(request, pluginOptions, {
       issuer: "createRehabilitateOptions",
     });
@@ -163,8 +230,8 @@ function Factory(schema, pluginOptions = {}) {
     };
   }
 
-  const helperMethods = {
-    createBrowseOptions(request) {
+  const helperMethods: HelperMethods = {
+    createBrowseOptions(request){
       const options = createBulkReadOptions(request);
 
       return options;
