@@ -1,12 +1,12 @@
-const helperFactory = require("./factories/helperFactory");
-const browseFactory = require("./factories/browseFactory");
-const readFactory = require("./factories/readFactory");
-const editFactory = require("./factories/editFactory");
-const addFactory = require("./factories/addFactory");
-const destroyFactory = require("./factories/destroyFactory");
-const softDeleteFactory = require("./factories/softDeleteFactory");
-const rehabilitateFactory = require("./factories/rehabilitateFactory");
-const { checkSchema } = require("./RequestValidator");
+const helperFactory = require("./factories/helperFactory.js");
+const browseFactory = require("./factories/browseFactory.js");
+const readFactory = require("./factories/readFactory.js");
+const editFactory = require("./factories/editFactory.js");
+const addFactory = require("./factories/addFactory.js");
+const destroyFactory = require("./factories/destroyFactory.js");
+const softDeleteFactory = require("./factories/softDeleteFactory.js");
+const rehabilitateFactory = require("./factories/rehabilitateFactory.js");
+const { checkSchema } = require("./RequestValidator.js");
 
 const defaultPluginOptions = {
   defaultPageSize: 10,

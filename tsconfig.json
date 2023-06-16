@@ -1,0 +1,15 @@
+{
+    "include": [
+        "src/**/*.ts", 
+        "tests/**/*.ts"
+    ],
+    "compilerOptions": {
+        "module": "commonjs",
+        "declaration": true,
+        "emitDeclarationOnly": true,
+        "isolatedModules": true
+    },
+    "exclude": [
+        "node_modules"
+    ]
+}

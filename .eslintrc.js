@@ -24,8 +24,9 @@ module.exports = {
         'prettier',
       ],
       rules: {
-        '@typescript-eslint/no-explicit-any': 'off',
+        '@typescript-eslint/no-explicit-any': 'error',
         '@typescript-eslint/ban-types': 'off',
+        '@typescript-eslint/no-var-requires': 'off',
       },
     },
   ],
