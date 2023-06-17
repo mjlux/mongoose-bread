@@ -41,7 +41,7 @@ export type PluginOptions = {
     pagination: boolean;
     allowDiskUse: boolean;
     forceCountFn: boolean;
-    useCustomCountFn: boolean;
+    useCustomCountFn: (() => Promise<number>) | undefined;
     useEstimatedCount: boolean;
     lean: boolean;
     leanWithId: boolean;

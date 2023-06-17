@@ -54,7 +54,7 @@ export type PluginOptions = {
   pagination: boolean,
   allowDiskUse: boolean,
   forceCountFn: boolean,
-  useCustomCountFn: boolean,
+  useCustomCountFn: (() => Promise<number>) | undefined,
   useEstimatedCount: boolean,
   lean: boolean,
   leanWithId: boolean,
@@ -101,7 +101,7 @@ const defaultPluginOptions:PluginOptions = {
   pagination: true,
   allowDiskUse: false,
   forceCountFn: false,
-  useCustomCountFn: false,
+  useCustomCountFn: undefined,
   useEstimatedCount: false,
   lean: false,
   leanWithId: false, // override mongoose-paginate-v2 default - was true
