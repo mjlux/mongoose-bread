@@ -5,7 +5,9 @@ const removeNullAndUndefinedStrings = ([k, v]) =>
 const removeLeadingAndTrailingSlash = (s) => String(s).replace(/^\/|\/$/g, "");
 const { isArray } = Array;
 
-class BreadUrlBuilder {
+type Stringifyable = string | { toString: () => string }
+
+export default class BreadUrlBuilder {
   static ASC = Symbol("asc");
   static DESC = Symbol("desc");
   static HTTPS = Symbol("https");
@@ -15,7 +17,7 @@ class BreadUrlBuilder {
   #protocol = BreadUrlBuilder.HTTPS;
   #endpoint = "";
   #hash = "";
-  #paths = new Array();
+  #paths = new Array<Stringifyable>();
   #parameters = new Map();
 
   #_selectCalled = false;
@@ -26,7 +28,7 @@ class BreadUrlBuilder {
     invert: false,
   };
 
-  constructor($baseUrl) {
+  constructor($baseUrl:string) {
     if (typeof $baseUrl != "string")
       throw new Error("invalid argument - expected String - @BreadUrlBuilder()");
     this.#baseUrl = this.#extractHash($baseUrl);
@@ -62,7 +64,7 @@ class BreadUrlBuilder {
     return this;
   }
 
-  protocol($protocol) {
+  protocol($protocol:symbol) {
     const allowedProtocols = [
       BreadUrlBuilder.FORCE_HTTP,
       BreadUrlBuilder.HTTPS,
@@ -74,7 +76,7 @@ class BreadUrlBuilder {
     this.#protocol = $protocol;
     return this;
   }
-  port($port) {
+  port($port:number) {
     if (typeof $port != "number")
       throw new Error("invalid argument - expected Number - @port()");
     const baseUrl = new URL(this.#baseUrl);
@@ -86,31 +88,31 @@ class BreadUrlBuilder {
     }
     return this;
   }
-  endpoint($endpoint) {
+  endpoint($endpoint:string) {
     if (typeof $endpoint != "string")
       throw new Error("invalid argument - expected String - @endpoint()");
     this.#endpoint = this.#extractHash($endpoint);
     return this;
   }
-  hash($hash) {
+  hash($hash:string) {
     if (typeof $hash != "string")
       throw new Error("invalid argument - expected String - @hash()");
     this.#hash = $hash.startsWith("#") ? $hash : `#${$hash}`;
     return this;
   }
-  setPath($path) {
+  setPath($path:Stringifyable) {
     return this.clearPath().addPath($path)
   }
-  addPath($path) {
+  addPath($path:Stringifyable) {
     if (!$path.toString)
       throw new Error("invalid argument - expected stringifyable - @addPath()");
     this.#paths.push($path);
     return this;
   }
-  addToPath($path) {
+  addToPath($path:Stringifyable) {
     return this.addPath($path);
   }
-  addParameter($parameter, $value) {
+  addParameter($parameter:string, $value:string | number) {
     if (!$parameter || !$value) return this;
     if (
       typeof $parameter != "string" ||
@@ -132,7 +134,7 @@ class BreadUrlBuilder {
     this.#parameters.set("leanWithout_id", !!$leanWithout_id);
     return this;
   }
-  search($search) {
+  search($search:string) {
     if (!$search) {
       this.#parameters.delete("search");
       return this;
@@ -142,26 +144,19 @@ class BreadUrlBuilder {
     this.#parameters.set("search", $search);
     return this;
   }
-  limit($limit) {
+  limit($limit:number) {
     if (typeof $limit != "number")
       throw new Error("invalid argument - expected Number - @limit()");
     this.#parameters.set("limit", $limit);
     return this;
   }
-  page($page) {
+  page($page:number) {
     if (typeof $page != "number")
       throw new Error("invalid argument - expected Number - @page()");
     this.#parameters.set("page", $page);
     return this;
   }
-  
-  /**
-   *
-   * @param {String} $sort
-   * @param {BreadUrlBuilder.ASC|BreadUrlBuilder.DESC} $order
-   * @returns BreadUrlBuilder
-   */
-  addSort($sort, $order) {
+  addSort($sort:string, $order:symbol) {
     if( !this.#parameters.has("sort") )
       return this.sort($sort, $order);
 
@@ -174,25 +169,25 @@ class BreadUrlBuilder {
 
     const existingSort = new Set(this.#parameters.get("sort").split(" "))
 
-    $sort = $sort
+    let _sort = $sort
       .trim()
       .split(" ")
       .map(s => s.replace(/-/g, ""))
       
-    $sort.forEach( s => {
+    _sort.forEach( s => {
       existingSort.delete(s)
       existingSort.delete(`-${s}`)
     })
 
-    $sort = $sort.map(s => ($order === DESC) ? `-${s}` : s)
-    const uniqueFields = [...new Set($sort)]
+    _sort = _sort.map(s => ($order === DESC) ? `-${s}` : s)
+    const uniqueFields = [...new Set(_sort)]
     this.#parameters.set("sort", [...existingSort, ...uniqueFields].join(" "));
     return this;
   }
-  addToSort($sort, $order) {
+  addToSort($sort:string, $order:symbol) {
     return this.addSort($sort, $order)
   }
-  sort($sort, $order) {
+  sort($sort:string, $order:symbol) {
     const { ASC, DESC } = BreadUrlBuilder;
 
     if (!$sort)
@@ -201,22 +196,18 @@ class BreadUrlBuilder {
     if (!($order == ASC || $order == DESC))
       throw new Error("invalid argument 'order' - expected BreadUrlBuilder.ASC|BreadUrlBuilder.DESC - @sort()");
 
-    $sort = $sort
+    const _sort = $sort
       .trim()
       .split(" ")
       .map(s => s.replace(/-/g, ""))
       .map(s => ($order === DESC) ? `-${s}` : s)
 
-    const uniqueFields = [...new Set($sort)]
+    const uniqueFields = [...new Set(_sort)]
     this.#parameters.set("sort", uniqueFields.join(" "));
 
     return this;
   }
-  /**
-   * @param {Sting|Array} $fields
-   * @returns BreadUrlBuilder
-   */
-  select($fields = "") {
+  select($fields:string | Array<string> = "") {
     if (this.#_excludeCalled) throw new Error(SelectExcludeErrorMessage);
     this.#_selectCalled = true;
     if (typeof $fields === "string") $fields = $fields.split(" ");
@@ -226,33 +217,29 @@ class BreadUrlBuilder {
     this.#parameters.set("select", $fields);
     return this;
   }
-  /**
-   * @param {Sting|Array} $fields
-   * @returns BreadUrlBuilder
-   */
-  exclude($fields = "") {
+  exclude($fields:string | Array<string> = "") {
     if (this.#_selectCalled) throw new Error(SelectExcludeErrorMessage);
     this.#_excludeCalled = true;
     if (typeof $fields === "string") $fields = $fields.split(" ");
     if (!isArray($fields))
       throw new Error("invalid argument - expected String|Array - @exclude()");
-    $fields = $fields.map((field) => `-${(field.replace(/-/g), "")}`).join(" ");
+    $fields = $fields.map((field) => `-${field.replace(/-/g, "")}`).join(" ");
     this.#parameters.set("select", $fields);
     return this;
   }
-  projection($projection) {
+  projection($projection:object) {
     if (typeof $projection != "object")
       throw new Error("invalid argument - expected Object - @projection()");
     this.#parameters.set("projection", JSON.stringify($projection));
     return this;
   }
-  query($query) {
+  query($query:object) {
     if (typeof $query != "object")
       throw new Error("invalid argument - expected Object - @query()");
     this.#parameters.set("query", JSON.stringify($query));
     return this;
   }
-  populate($populate) {
+  populate($populate:Array<string> | {path:string, select?: string, match?: object, options?: object}) {
     if (!(typeof $populate == "object" || isArray($populate)))
       throw new Error("invalid argument - expected Object|Array - @populate()");
     this.#parameters.set("populate", JSON.stringify($populate));
@@ -261,14 +248,14 @@ class BreadUrlBuilder {
 
   // --------- COMPARE FNS -------------
 
-  with($key) {
+  with($key:string) {
     if (typeof $key != "string")
       throw new Error("invalid argument - expected String - @with()");
     this.#_compare.history.add($key);
     this.#_compare.value = $key;
     return this;
   }
-  withOut($key) {
+  withOut($key:string) {
     if (!(this.#parameters.has($key) || this.#_compare.history.has($key)))
       return this;
     if (typeof $key != "string")
@@ -276,39 +263,39 @@ class BreadUrlBuilder {
     const params = Array.from(this.#parameters).filter(
       ([key]) => !key.startsWith($key)
     );
-    this.#parameters = new URLSearchParams(params);
+    this.#parameters = new Map(params);
     this.#_compare.history.delete($key);
     return this;
   }
-  greaterThan($value) {
+  greaterThan($value:string|number) {
     return this.#addCompare($value, {
       at: "greaterThan",
       types: ["number"],
       comparison: "gt",
     });
   }
-  lessThan($value) {
+  lessThan($value:string|number) {
     return this.#addCompare($value, {
       at: "lessThan",
       types: ["number"],
       comparison: "lt",
     });
   }
-  greaterThanEqual($value) {
+  greaterThanEqual($value:string|number) {
     return this.#addCompare($value, {
       at: "greaterThanEqual",
       types: ["number"],
       comparison: "gte",
     });
   }
-  lessThanEqual($value) {
+  lessThanEqual($value:string|number) {
     return this.#addCompare($value, {
       at: "lessThanEqual",
       types: ["number"],
       comparison: "lte",
     });
   }
-  equalTo($value) {
+  equalTo($value:string|number) {
     const comparison = this.#_compare.invert ? "ne" : "eq";
     return this.#addCompare($value, {
       at: "equalTo",
@@ -316,22 +303,22 @@ class BreadUrlBuilder {
       comparison,
     });
   }
-  gt($value) {
+  gt($value:string|number) {
     return this.greaterThan($value);
   }
-  lt($value) {
+  lt($value:string|number) {
     return this.lessThan($value);
   }
-  eq($value) {
+  eq($value:string|number) {
     return this.equalTo($value);
   }
-  ne($value) {
+  ne($value:string|number) {
     return this.not.equalTo($value);
   }
-  gte($value) {
+  gte($value:string|number) {
     return this.greaterThanEqual($value);
   }
-  lte($value) {
+  lte($value:string|number) {
     return this.lessThanEqual($value);
   }
   get to() {
@@ -354,20 +341,20 @@ class BreadUrlBuilder {
 
   resetToBaseUrl() {
     this.#endpoint = "";
-    this.#paths = new Array();
+    this.#paths = new Array<string>();
     this.#parameters = new Map();
     this.#hash = "";
     return this;
   }
   resetToEndpoint() {
-    this.#paths = new Array();
+    this.#paths = new Array<string>();
     this.#parameters = new Map();
     this.#hash = "";
     return this;
   }
   clearPath() {
-    this.#paths = new Array();
-    this.search(false)
+    this.#paths = new Array<string>();
+    this.search('')
     return this;
   }
   clearParameter() {
@@ -381,20 +368,20 @@ class BreadUrlBuilder {
 
   // --------- GETTER  -----------
 
-  getParameter($key){ return this.#parameters.get($key) }
-  getLean(){ return this.#parameters.get("lean") }
-  getLeanWithId(){ return this.#parameters.get("leanWithId") }
-  getLeanWithout_id(){ return this.#parameters.get("leanWithout_id") }
-  getSearch(){ return this.#parameters.get("search") }
-  getLimit(){ return this.#parameters.get("limit") }
-  getPage(){ return this.#parameters.get("page") }
-  getSort(){ return this.#parameters.get("sort") }
-  getSelect(){ return this.#parameters.get("select") }
-  getProjection(){ return this.#parameters.get("projection") }
-  getQuery(){ return this.#parameters.get("query") }
-  getPopulate(){ return this.#parameters.get("populate") }
-  getURL() { return this.get(); }
+  getParameter($key:string):boolean|string|number{ return this.#parameters.get($key) }
+  getLean():boolean{ return this.#parameters.get("lean") }
+  getLeanWithId():boolean{ return this.#parameters.get("leanWithId") }
+  getLeanWithout_id():boolean{ return this.#parameters.get("leanWithout_id") }
+  getSearch():string{ return this.#parameters.get("search") }
+  getLimit():string|number{ return this.#parameters.get("limit") }
+  getPage():number{ return this.#parameters.get("page") }
+  getSort():string{ return this.#parameters.get("sort") }
+  getSelect():string{ return this.#parameters.get("select") }
+  getProjection():string{ return this.#parameters.get("projection") }
+  getQuery():string{ return this.#parameters.get("query") }
+  getPopulate():string{ return this.#parameters.get("populate") }
 
+  getURL() { return this.get(); }
   get() {
     this.#applyProtocol();
     const endpoint = [this.#endpoint, ...this.#paths]
