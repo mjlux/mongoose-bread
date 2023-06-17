@@ -1,4 +1,6 @@
-function parseLeanFactory(options) {
+import { PluginOptions } from "..";
+
+export default function parseLeanFactory(options:PluginOptions) {
   const { lean, leanWithId, leanWithout_id } = options;
 
   return !(lean && leanWithId)
