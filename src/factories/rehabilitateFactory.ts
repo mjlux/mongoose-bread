@@ -1,6 +1,16 @@
-const toBreadErrorFactory = require("./toBreadErrorFactory");
+import { PluginOptions } from "..";
+import { BulkRehabilitateOptions, PaginationOptions, SingleRehabilitateOptions } from "./helperFactory";
+import toBreadErrorFactory from "./toBreadErrorFactory";
 
-function rehabilitateFactory(pluginOptions) {
+type RehabilitateResult = {
+  docs: Array<unknown>,
+  acknowledged: boolean,
+  modifiedCount: number
+}
+
+type RehabilitateFn = (options:PaginationOptions & (SingleRehabilitateOptions | BulkRehabilitateOptions)) => Promise<RehabilitateResult>
+
+export default function rehabilitateFactory(pluginOptions:PluginOptions):RehabilitateFn {
   const { docs, modifiedCount, acknowledged } = pluginOptions.customLabels;
   const toBreadResult = ([result, _docs]) => ({
     [docs]: _docs,
