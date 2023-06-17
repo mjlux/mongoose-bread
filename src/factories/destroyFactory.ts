@@ -1,6 +1,15 @@
-const toBreadErrorFactory = require("./toBreadErrorFactory");
+import { BulkDeleteOptions, PaginationOptions, SingleDeleteOptions } from "./helperFactory";
+import toBreadErrorFactory from "./toBreadErrorFactory";
 
-function destroyFactory(pluginOptions) {
+type DestroyResult = {
+  docs: Array<unknown>,
+  acknowledged: boolean,
+  createdCount: number
+}
+
+type DestroyFn = (options:PaginationOptions & (SingleDeleteOptions | BulkDeleteOptions)) => Promise<DestroyResult>
+
+export default function destroyFactory(pluginOptions):DestroyFn {
   const { softDelete } = pluginOptions;
   const { docs, acknowledged, deletedCount } = pluginOptions.customLabels;
   const toBreadResult = ([result, _docs]) => ({
