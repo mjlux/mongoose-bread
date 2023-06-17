@@ -1,6 +1,6 @@
-const MongooseBreadError = require("../MongooseBreadError");
+import MongooseBreadError from "../MongooseBreadError";
 
-function toBreadErrorFactory(result = {}) {
+export default function toBreadErrorFactory(result = {}) {
   return function toBreadError(error) {
     if (error.message.startsWith("No document found")) {
       throw new MongooseBreadError({
@@ -8,6 +8,7 @@ function toBreadErrorFactory(result = {}) {
         details: error.message,
         statusCode: 404,
         result: { ...result },
+        issuer: "db Error"
       });
     }
     throw error;
