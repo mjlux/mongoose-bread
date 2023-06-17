@@ -1,3 +1,4 @@
+import { PluginOptions } from "..";
 import { BulkEditOptions, PaginationOptions, SingleEditOptions } from "./helperFactory";
 type EditResult = {
     docs: Array<unknown>;
@@ -5,5 +6,5 @@ type EditResult = {
     modifiedCount: number;
 };
 type EditFn = (options: PaginationOptions & (SingleEditOptions | BulkEditOptions)) => Promise<EditResult>;
-export default function editFactory(pluginOptions: any): EditFn;
+export default function editFactory(pluginOptions: PluginOptions): EditFn;
 export {};

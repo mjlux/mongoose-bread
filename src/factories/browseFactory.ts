@@ -1,3 +1,4 @@
+import { PluginOptions } from "..";
 import { BulkReadOptions, PaginationOptions } from "./helperFactory";
 import toBreadErrorFactory from "./toBreadErrorFactory";
 
@@ -10,7 +11,7 @@ type BrowseResult = {
 
 type BrowseFn = (options:PaginationOptions & BulkReadOptions) => Promise<BrowseResult>
 
-export default function browseFactory(pluginOptions): BrowseFn {
+export default function browseFactory(pluginOptions:PluginOptions): BrowseFn {
   const { docs, acknowledged, readCount } = pluginOptions.customLabels;
   const toBreadResult = (result) => ({
     ...result,

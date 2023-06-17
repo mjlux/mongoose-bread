@@ -1,3 +1,4 @@
+import { PluginOptions } from "..";
 import { BulkReadOptions, PaginationOptions } from "./helperFactory";
 type BrowseResult = {
     docs: Array<unknown>;
@@ -6,5 +7,5 @@ type BrowseResult = {
     readCount: number;
 };
 type BrowseFn = (options: PaginationOptions & BulkReadOptions) => Promise<BrowseResult>;
-export default function browseFactory(pluginOptions: any): BrowseFn;
+export default function browseFactory(pluginOptions: PluginOptions): BrowseFn;
 export {};

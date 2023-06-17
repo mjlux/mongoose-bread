@@ -1,3 +1,4 @@
+import { PluginOptions } from "..";
 import { BulkDeleteOptions, PaginationOptions, SingleDeleteOptions } from "./helperFactory";
 import toBreadErrorFactory from "./toBreadErrorFactory";
 
@@ -9,7 +10,7 @@ type DestroyResult = {
 
 type DestroyFn = (options:PaginationOptions & (SingleDeleteOptions | BulkDeleteOptions)) => Promise<DestroyResult>
 
-export default function destroyFactory(pluginOptions):DestroyFn {
+export default function destroyFactory(pluginOptions:PluginOptions):DestroyFn {
   const { softDelete } = pluginOptions;
   const { docs, acknowledged, deletedCount } = pluginOptions.customLabels;
   const toBreadResult = ([result, _docs]) => ({
