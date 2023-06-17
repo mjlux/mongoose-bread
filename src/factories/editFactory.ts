@@ -5,7 +5,7 @@ import toBreadErrorFactory from "./toBreadErrorFactory";
 type EditResult = {
   docs: Array<unknown>,
   acknowledged: boolean,
-  createdCount: number
+  modifiedCount: number
 }
 
 type EditFn = (options:PaginationOptions & (SingleEditOptions | BulkEditOptions)) => Promise<EditResult>

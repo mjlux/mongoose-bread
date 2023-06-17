@@ -5,7 +5,7 @@ type BrowseResult = {
   docs: Array<unknown>,
   acknowledged: boolean,
   pagination: {},
-  createdCount: number
+  readCount: number
 }
 
 type BrowseFn = (options:PaginationOptions & BulkReadOptions) => Promise<BrowseResult>

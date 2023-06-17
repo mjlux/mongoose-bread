@@ -2,7 +2,7 @@ import { BulkEditOptions, PaginationOptions, SingleEditOptions } from "./helperF
 type EditResult = {
     docs: Array<unknown>;
     acknowledged: boolean;
-    createdCount: number;
+    modifiedCount: number;
 };
 type EditFn = (options: PaginationOptions & (SingleEditOptions | BulkEditOptions)) => Promise<EditResult>;
 export default function editFactory(pluginOptions: any): EditFn;

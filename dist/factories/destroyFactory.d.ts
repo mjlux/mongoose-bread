@@ -2,7 +2,7 @@ import { BulkDeleteOptions, PaginationOptions, SingleDeleteOptions } from "./hel
 type DestroyResult = {
     docs: Array<unknown>;
     acknowledged: boolean;
-    createdCount: number;
+    deletedCount: number;
 };
 type DestroyFn = (options: PaginationOptions & (SingleDeleteOptions | BulkDeleteOptions)) => Promise<DestroyResult>;
 export default function destroyFactory(pluginOptions: any): DestroyFn;

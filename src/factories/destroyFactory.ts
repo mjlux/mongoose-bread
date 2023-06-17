@@ -4,7 +4,7 @@ import toBreadErrorFactory from "./toBreadErrorFactory";
 type DestroyResult = {
   docs: Array<unknown>,
   acknowledged: boolean,
-  createdCount: number
+  deletedCount: number
 }
 
 type DestroyFn = (options:PaginationOptions & (SingleDeleteOptions | BulkDeleteOptions)) => Promise<DestroyResult>
