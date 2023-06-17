@@ -1,7 +1,16 @@
-const parseLeanFactory = require("./parseLeanFactory");
-const toBreadErrorFactory = require("./toBreadErrorFactory");
+import { BulkEditOptions, PaginationOptions, SingleEditOptions } from "./helperFactory";
+import parseLeanFactory from "./parseLeanFactory";
+import toBreadErrorFactory from "./toBreadErrorFactory";
 
-function editFactory(pluginOptions) {
+type EditResult = {
+  docs: Array<unknown>,
+  acknowledged: boolean,
+  createdCount: number
+}
+
+type EditFn = (options:PaginationOptions & (SingleEditOptions | BulkEditOptions)) => Promise<EditResult>
+
+export default function editFactory(pluginOptions):EditFn {
   const { docs, acknowledged, modifiedCount } = pluginOptions.customLabels;
   const toBreadResult = ([result, _docs]) => ({
     [docs]: _docs,
