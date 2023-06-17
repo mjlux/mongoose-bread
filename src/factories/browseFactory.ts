@@ -1,6 +1,16 @@
-const toBreadErrorFactory = require("./toBreadErrorFactory");
+import { BulkReadOptions, PaginationOptions } from "./helperFactory";
+import toBreadErrorFactory from "./toBreadErrorFactory";
 
-function browseFactory(pluginOptions) {
+type BrowseResult = {
+  docs: Array<unknown>,
+  acknowledged: boolean,
+  pagination: {},
+  createdCount: number
+}
+
+type BrowseFn = (options:PaginationOptions & BulkReadOptions) => Promise<BrowseResult>
+
+export default function browseFactory(pluginOptions): BrowseFn {
   const { docs, acknowledged, readCount } = pluginOptions.customLabels;
   const toBreadResult = (result) => ({
     ...result,
