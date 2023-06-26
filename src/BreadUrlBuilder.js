@@ -283,28 +283,28 @@ class BreadUrlBuilder {
   greaterThan($value) {
     return this.#addCompare($value, {
       at: "greaterThan",
-      types: ["number"],
+      types: ["number", "string"],
       comparison: "gt",
     });
   }
   lessThan($value) {
     return this.#addCompare($value, {
       at: "lessThan",
-      types: ["number"],
+      types: ["number", "string"],
       comparison: "lt",
     });
   }
   greaterThanEqual($value) {
     return this.#addCompare($value, {
       at: "greaterThanEqual",
-      types: ["number"],
+      types: ["number", "string"],
       comparison: "gte",
     });
   }
   lessThanEqual($value) {
     return this.#addCompare($value, {
       at: "lessThanEqual",
-      types: ["number"],
+      types: ["number", "string"],
       comparison: "lte",
     });
   }
@@ -312,7 +312,7 @@ class BreadUrlBuilder {
     const comparison = this.#_compare.invert ? "ne" : "eq";
     return this.#addCompare($value, {
       at: "equalTo",
-      types: ["string", "number"],
+      types: ["number", "string"],
       comparison,
     });
   }
