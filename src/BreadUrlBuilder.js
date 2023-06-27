@@ -49,11 +49,6 @@ class BreadUrlBuilder {
   }
   #addCompare($value, $options) {
     if (!this.#_compare.value) return this;
-    if (!$options.types.includes(typeof $value))
-      throw new Error(
-        `invalid argument - expected ${$options.types.join("|")} - @${$options.at
-        }()`
-      );
     this.#_compare.invert = false;
     this.#parameters.set(
       `${this.#_compare.value}[${$options.comparison}]`,
@@ -283,37 +278,31 @@ class BreadUrlBuilder {
   greaterThan($value) {
     return this.#addCompare($value, {
       at: "greaterThan",
-      types: ["number", "string"],
       comparison: "gt",
     });
   }
   lessThan($value) {
     return this.#addCompare($value, {
       at: "lessThan",
-      types: ["number", "string"],
       comparison: "lt",
     });
   }
   greaterThanEqual($value) {
     return this.#addCompare($value, {
       at: "greaterThanEqual",
-      types: ["number", "string"],
       comparison: "gte",
     });
   }
   lessThanEqual($value) {
     return this.#addCompare($value, {
       at: "lessThanEqual",
-      types: ["number", "string"],
       comparison: "lte",
     });
   }
   equalTo($value) {
-    const comparison = this.#_compare.invert ? "ne" : "eq";
     return this.#addCompare($value, {
       at: "equalTo",
-      types: ["number", "string"],
-      comparison,
+      comparison: this.#_compare.invert ? "ne" : "eq",
     });
   }
   gt($value) {
