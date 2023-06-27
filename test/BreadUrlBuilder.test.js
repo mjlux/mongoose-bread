@@ -144,15 +144,15 @@ describe("BreadUrlBuilder", function () {
     expect(`${testUrl}`).to.equal(
       "https://api.test.org/?chicken=GackGack&price%5Bgt%5D=100&price%5Blt%5D=1000"
     );
-    testUrl.withOut("unknownKey");
+    testUrl.without("unknownKey");
     expect(`${testUrl}`, "ignore unset params").to.equal(
       "https://api.test.org/?chicken=GackGack&price%5Bgt%5D=100&price%5Blt%5D=1000"
     );
-    testUrl.withOut("chicken");
+    testUrl.without("chicken");
     expect(`${testUrl}`, "remove param").to.equal(
       "https://api.test.org/?price%5Bgt%5D=100&price%5Blt%5D=1000"
     );
-    testUrl.withOut("price");
+    testUrl.without("price");
     expect(`${testUrl}`, "remove compare").to.equal("https://api.test.org/");
   });
 
