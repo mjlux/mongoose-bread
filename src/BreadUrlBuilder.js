@@ -268,7 +268,7 @@ class BreadUrlBuilder {
     this.#_compare.value = $key;
     return this;
   }
-  withOut($key) {
+  without($key) {
     if (!(this.#parameters.has($key) || this.#_compare.history.has($key)))
       return this;
     if (typeof $key != "string")
