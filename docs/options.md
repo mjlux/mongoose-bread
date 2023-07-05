@@ -11,6 +11,7 @@ This list shows all mongoose-bread default Options followed by a explanation for
 - paramsIdKey: 'id'
 - bulkIdsKey: '\_ids'
 - bulkDocsKey: '\_docs'
+- runUpdateValidators: true
 - softDelete: false
 - softDeleteOptions:
   - overrideMethods: true
@@ -99,6 +100,11 @@ Inherited from mongoose-paginate-v2 [Documentation](https://github.com/aravindnc
 
 > expected **request.body[key]:`Array<any>`** for bulk edit() add() destroy() softDelete() rehabilitate()  
 > i.e. request.body: { **\_docs**: [{name: 'newDoc#1'}, {name: 'newDoc#2'}] }
+
+**runUpdateValidators:`Boolean`** - default: true
+
+> enables schema validation on the following mongoose update methods  
+> 'findOneAndUpdate', 'updateMany', 'updateOne', 'update'
 
 **softDelete:`Boolean`** - default: false
 
