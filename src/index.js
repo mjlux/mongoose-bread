@@ -16,6 +16,7 @@ const defaultPluginOptions = {
   paramsIdKey: "id",
   bulkIdsKey: "_ids",
   bulkDocsKey: "_docs",
+  runUpdateValidators: true,
   softDelete: false,
   softDeleteOptions: {
     overrideMethods: true,
@@ -85,6 +86,13 @@ function mongooseBread(schema, pluginOptions) {
   schema.statics.edit = editFactory(_pluginOptions);
   schema.statics.add = addFactory(_pluginOptions);
   schema.statics.destroy = destroyFactory(_pluginOptions);
+
+  // add runValidators option to update hooks
+  if (_pluginOptions.runUpdateValidators) {
+    ['findOneAndUpdate', 'updateMany', 'updateOne', 'update'].forEach(method => {
+      schema.pre(method, function () { this.setOptions({ runValidators: true }) })
+    })
+  }
 
   // register optional mongoose-delete dependency
   if (_pluginOptions.softDelete) {
