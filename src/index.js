@@ -123,4 +123,3 @@ function mongooseBread(schema, pluginOptions) {
 module.exports = mongooseBread;
 module.exports.mongooseBread = mongooseBread;
 module.exports.MongooseBreadError = require("./MongooseBreadError");
-module.exports.BreadUrlBuilder = require("./BreadUrlBuilder");

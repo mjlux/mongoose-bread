@@ -15,7 +15,6 @@
     "start": "node server.js",
     "pretest": "npm run build",
     "test": "node node_modules/mocha/bin/mocha test/*.js -R spec --ui bdd --timeout 9999999",
-    "test:builder": "npm run pretest & node node_modules/mocha/bin/mocha test/BreadUrlBuilder.test.js -R spec --ui bdd --timeout 9999999",
     "test:plugin": "npm run pretest & node node_modules/mocha/bin/mocha test/mongoose-bread.test.js -R spec --ui bdd --timeout 9999999",
     "build": "babel src -d dist --no-comments",
     "lint": "node node_modules/eslint/bin/eslint \"test\" \"src\" \".eslintrc.js\" --fix",
