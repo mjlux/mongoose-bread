@@ -5,7 +5,7 @@ const { expect } = require("chai");
 const mongooseBread = require("../dist/index");
 const { MongooseBreadError } = require("../dist/index");
 
-const MONGO_URI = "mongodb://127.0.0.1:27017/mongoose_bread_test";
+const MONGO_URI = "mongodb://127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000";
 
 const ProductCustomKeysSchema = new mongoose.Schema(
   {
@@ -103,11 +103,30 @@ const ProductSoftDelete = mongoose.model(
   ProductSoftDeleteSchema
 );
 
+const ProductTransactionSchema = new mongoose.Schema(
+  {
+    name: String,
+    price: Number,
+    currency: String,
+  },
+  {
+    timestamps: true,
+  }
+);
+ProductTransactionSchema.plugin(mongooseBread, {
+  searchableFields: ["name"],
+  runUpdateTransaction: true
+});
+const ProductTransaction = mongoose.model("ProductTransaction", ProductTransactionSchema);
+
 describe("mongoose-bread", async function () {
   before(function (done) {
     mongoose.connect(
       MONGO_URI,
-      { useUnifiedTopology: true, useNewUrlParser: true },
+      {
+        useUnifiedTopology: true, 
+        useNewUrlParser: true 
+      },
       done
     );
   });
@@ -162,6 +181,18 @@ describe("mongoose-bread", async function () {
         })
     );
     return ProductSoftDelete.create(products);
+  });
+
+  before(async function () {
+    let products = new Array(10).fill(undefined).map(
+      (_, i) =>
+        new Product({
+          name: `Product #${i + 1}`,
+          price: (i + 1) * 10,
+          currency: i < 5 ? "EUR" : "USD",
+        })
+    );
+    return ProductTransaction.create(products);
   });
 
   describe("with custom property access Keys", function () {
@@ -1176,11 +1207,64 @@ describe("mongoose-bread", async function () {
     });
   }); // end without softDelete
 
-  after(function (done) {
-    mongoose.connection.db.dropDatabase(done);
-  });
+  describe("with transaction", function(){
+
+    it("edits a document correctly", function () {
+      return ProductTransaction.create({ name: "temp" })
+        .then((doc) => {
+          const mockRequest = {
+            params: { id: doc._id },
+            body: { currency: "USD" },
+          };
+          const options = ProductTransaction.breadHelper().createEditOptions({
+            ...mockRequest,
+          });
+          return ProductTransaction.edit(options);
+        })
+        .then((result) => {
+          expect(result).to.be.an.instanceOf(Object);
+          expect(result.docs).to.be.an.instanceOf(Array);
+          expect(result.docs).to.have.length(1);
+          const doc = result.docs[0];
+          expect(doc).to.be.an.instanceOf(Object);
+          expect(doc.name).to.equal("temp");
+          expect(doc.currency).to.equal("USD");
+        });
+    });
+
+    it("edits many documents correctly", function () {
+      return ProductTransaction.create([
+        { name: "doc#1", currency: "EUR" },
+        { name: "doc#2", currency: "EUR" },
+      ])
+        .then((docs) => {
+          const ids = docs.map((d) => d._id);
+          const mockRequest = {
+            body: { _ids: [...ids], _docs: [{ currency: "USD" }] },
+          };
+          const options = ProductTransaction.breadHelper().createEditOptions({
+            ...mockRequest,
+          });
+          return ProductTransaction.edit(options);
+        })
+        .then((result) => {
+          expect(result).to.be.an.instanceOf(Object);
+          expect(result.docs).to.be.an.instanceOf(Array);
+          expect(result.docs).to.have.length(2);
+          const doc0 = result.docs[0];
+          expect(doc0).to.be.an.instanceOf(Object);
+          expect(doc0.name).to.equal("doc#1");
+          expect(doc0.currency).to.equal("USD");
+          const doc1 = result.docs[1];
+          expect(doc1).to.be.an.instanceOf(Object);
+          expect(doc1.name).to.equal("doc#2");
+          expect(doc1.currency).to.equal("USD");
+        });
+    });
+  }) // end with transaction
 
   after(function (done) {
-    mongoose.disconnect(done);
+    mongoose.connection.db.dropDatabase( () => mongoose.disconnect(done) )
   });
+
 });
