@@ -5,7 +5,7 @@ const { expect } = require("chai");
 const mongooseBread = require("../dist/index");
 const { MongooseBreadError } = require("../dist/index");
 
-const MONGO_URI = "mongodb://localhost/mongoose_bread_test";
+const MONGO_URI = "mongodb://127.0.0.1:27017/mongoose_bread_test";
 
 const ProductCustomKeysSchema = new mongoose.Schema(
   {
