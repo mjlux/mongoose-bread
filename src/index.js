@@ -16,6 +16,7 @@ const defaultPluginOptions = {
   paramsIdKey: "id",
   bulkIdsKey: "_ids",
   bulkDocsKey: "_docs",
+  runUpdateTransaction: false,
   runUpdateValidators: true,
   softDelete: false,
   softDeleteOptions: {
