@@ -11,6 +11,7 @@ This list shows all mongoose-bread default Options followed by a explanation for
 - paramsIdKey: 'id'
 - bulkIdsKey: '\_ids'
 - bulkDocsKey: '\_docs'
+- runUpdateTransaction: false
 - runUpdateValidators: true
 - softDelete: false
 - softDeleteOptions:
@@ -100,6 +101,11 @@ Inherited from mongoose-paginate-v2 [Documentation](https://github.com/aravindnc
 
 > expected **request.body[key]:`Array<any>`** for bulk edit() add() destroy() softDelete() rehabilitate()  
 > i.e. request.body: { **\_docs**: [{name: 'newDoc#1'}, {name: 'newDoc#2'}] }
+
+**runUpdateTransaction:`Boolean`** - default: false
+
+> If you run into the issue of old return values after edit and your db is running a replica set or sharded cluster, try enabling this option. 
+> It wraps the update and find calls in their own session and transaction to ensure updates are made before read
 
 **runUpdateValidators:`Boolean`** - default: true
 
