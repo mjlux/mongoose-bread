@@ -10,9 +10,7 @@ module.exports = {
     sourceType: 'module',
   },
   parser: 'babel-eslint',
-  rules: {
-    'linebreak-style': ['warn', 'unix'],
-  },
+  rules: {},
   overrides: [
     {
       files: '**/*.{ts,tsx}',
