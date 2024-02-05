@@ -12,6 +12,8 @@ const defaultPluginOptions = {
   defaultPageSize: 10,
   maxPageSize: 100,
   searchableFields: [],
+  enableAtlasSearch: false,
+  atlasSearchIndex: "",
   blacklistedFields: [],
   paramsIdKey: "id",
   bulkIdsKey: "_ids",
@@ -90,9 +92,13 @@ function mongooseBread(schema, pluginOptions) {
 
   // add runValidators option to update hooks
   if (_pluginOptions.runUpdateValidators) {
-    ['findOneAndUpdate', 'updateMany', 'updateOne', 'update'].forEach(method => {
-      schema.pre(method, function () { this.setOptions({ runValidators: true }) })
-    })
+    ["findOneAndUpdate", "updateMany", "updateOne", "update"].forEach(
+      (method) => {
+        schema.pre(method, function () {
+          this.setOptions({ runValidators: true });
+        });
+      }
+    );
   }
 
   // register optional mongoose-delete dependency
