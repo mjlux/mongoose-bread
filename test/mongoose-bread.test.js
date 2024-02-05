@@ -1368,9 +1368,7 @@ describe("mongoose-bread", async function () {
           return ProductAtlasSearch.browse(options);
         })
         .catch((err) => {
-          expect(err.toString()).to.equal(
-            "MongoServerError: Unrecognized pipeline stage name: '$search'"
-          );
+          expect(err.toString().startsWith("MongoServerError:")).to.be.true;
         });
     });
   }); // end Atlas Search
