@@ -28,16 +28,29 @@ function parseSearchFilter(query, options) {
     });
   }
 
-  const searchQuery = query.search
-    .split(" ")
-    .reduce((fieldQueriesCollection, searchTerm) => {
-      const fieldQueries = searchableFields.map((field) => {
-        return { [field]: { $regex: searchTerm, $options: "i" } };
-      });
-      return fieldQueriesCollection.concat(fieldQueries);
-    }, []);
+  if (options.enableAtlasSearch && options.atlasSearchIndex) {
+    const searchQuery = {
+      $search: {
+        index: options.atlasSearchIndex,
+        text: {
+          query: query.search,
+          path: searchableFields,
+        },
+      },
+    };
+    return JSON.stringify(searchQuery);
+  } else {
+    const searchQuery = query.search
+      .split(" ")
+      .reduce((fieldQueriesCollection, searchTerm) => {
+        const fieldQueries = searchableFields.map((field) => {
+          return { [field]: { $regex: searchTerm, $options: "i" } };
+        });
+        return fieldQueriesCollection.concat(fieldQueries);
+      }, []);
 
-  return JSON.stringify({ $or: searchQuery });
+    return JSON.stringify({ $or: searchQuery });
+  }
 }
 
 function parseQueryFilter(query, schema) {
