@@ -7,6 +7,8 @@ This list shows all mongoose-bread default Options followed by a explanation for
 - defaultPageSize: 10
 - maxPageSize: 100
 - searchableFields: []
+- enableAtlasSearch: false
+- atlasSearchIndex: ''
 - blacklistedFields: []
 - paramsIdKey: 'id'
 - bulkIdsKey: '\_ids'
@@ -77,6 +79,24 @@ Inherited from mongoose-paginate-v2 [Documentation](https://github.com/aravindnc
 > request.query.search = "best js tutorials"  
 > will search 'title', 'description' and 'excerpt' for **best** or **js** or **tutorials**
 
+**enableAtlasSearch:`Boolean`** - default: false
+
+> 📢 **Only suitable for MongoDB Atlas Cluster with $search support**  
+> Runs a query with $search operator for fullText Search. [Docs](https://www.mongodb.com/docs/atlas/atlas-search/)  
+> in example  
+> enableAtlasSearch = true  
+> atlasSearchIndex: 'my-fulltext-search-index' <- required  
+> searchableFields = ['title', 'description', 'excerpt']  
+> request.query.search = "best js tutorials"  
+> will search 'title', 'description' and 'excerpt' for **best js tutorials** and anything related
+
+**atlasSearchIndex:`String`** - default: ''
+
+> used in combination with enableAtlasSearch  
+> is required if enableAtlasSearch is set to true  
+> if ommited the search query will resolve in a regularExpression query  
+> specifies the AtlasSearch Index created for fullText Search [Docs](https://www.mongodb.com/docs/atlas/atlas-search/)
+
 **blacklistedFields:`Array<String>`** - default: []
 
 > creates projection  
@@ -104,7 +124,7 @@ Inherited from mongoose-paginate-v2 [Documentation](https://github.com/aravindnc
 
 **runUpdateTransaction:`Boolean`** - default: false
 
-> If you run into the issue of old return values after edit and your db is running a replica set or sharded cluster, try enabling this option. 
+> If you run into the issue of old return values after edit and your db is running a replica set or sharded cluster, try enabling this option.
 > It wraps the update and find calls in their own session and transaction to ensure updates are made before read
 
 **runUpdateValidators:`Boolean`** - default: true
