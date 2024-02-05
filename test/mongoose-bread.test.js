@@ -1357,6 +1357,22 @@ describe("mongoose-bread", async function () {
         expect(result.query.$search.index).to.equal("fulltexttest");
       });
     });
+
+    it("throws an error in test enviroment", function () {
+      return ProductAtlasSearch.create({ name: "temp" })
+        .then(() => {
+          const options = ProductAtlasSearch.breadHelper().createBrowseOptions({
+            query: { search: "5" },
+          });
+
+          return ProductAtlasSearch.browse(options);
+        })
+        .catch((err) => {
+          expect(err.toString()).to.equal(
+            "MongoServerError: Unrecognized pipeline stage name: '$search'"
+          );
+        });
+    });
   }); // end Atlas Search
 
   after(function (done) {
