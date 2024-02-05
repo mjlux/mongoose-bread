@@ -8,7 +8,7 @@
   "main": "dist/index.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/mjlux/mongoose-bread.git"
+    "url": "git+https://github.com/mjlux/mongoose-bread.git"
   },
   "scripts": {
     "prestart": "npm run build",
