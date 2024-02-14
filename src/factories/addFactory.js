@@ -15,7 +15,8 @@ function addFactory(pluginOptions) {
   });
 
   return function add(options) {
-    const { bulk, payload, projection, select, sort, lean, limit } = options;
+    const { bulk, payload, projection, populate, select, sort, lean, limit } =
+      options;
     const parseLean = parseLeanFactory(options);
 
     const mergeCreateAndCount = (result) => {
@@ -29,6 +30,7 @@ function addFactory(pluginOptions) {
           createdCount: bulk ? result.length : 1,
         }),
         this.find(query, projection)
+          .populate(populate)
           .select(select)
           .sort(sort)
           .lean(lean)
