@@ -94,6 +94,12 @@ function mongooseBread(schema, pluginOptions) {
     softDeleteOptions: _softDeleteOptions,
   };
 
+  // validate searchableFields - if enabled
+  const { searchableFields } = _pluginOptions;
+  if (searchableFields && searchableFields.length) {
+    _pluginOptions.searchableFields =
+      checkSchema(schema).getSearchableFieldsOfTypeString(searchableFields);
+  }
   // register mongoose-paginate-v2 dependency
   checkSchema(schema).hasMongoosePaginateV2AlreadyInstalled("index.js");
   schema.plugin(require("mongoose-paginate-v2"));

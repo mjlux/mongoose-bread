@@ -1,3 +1,4 @@
+const mongoose = require("mongoose");
 const MongooseBreadError = require("./MongooseBreadError");
 const { isValidObjectId } = require("mongoose");
 
@@ -119,6 +120,18 @@ function checkSchema(schema) {
         });
       }
       return validators;
+    },
+    getSearchableFieldsOfTypeString(searchableFields) {
+      const validFields = searchableFields.filter((field) => {
+        const isString =
+          schema.path(field) instanceof mongoose.Schema.Types.String;
+        if (!isString)
+          console.warn(
+            `schema.path(${field}) is not of type String - searchableField ${field} has been removed`
+          );
+        return isString;
+      });
+      return validFields;
     },
   };
   return validators;
