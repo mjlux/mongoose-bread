@@ -1,5 +1,6 @@
 "use strict";
-var MongooseBreadError = require("./MongooseBreadError"),
+var mongoose = require("mongoose"),
+  MongooseBreadError = require("./MongooseBreadError"),
   _require = require("mongoose"),
   isValidObjectId = _require.isValidObjectId;
 function checkRequest(a) {
@@ -98,6 +99,13 @@ function checkSchema(a) {
           issuer: `MongooseBread ${c}`,
         });
       return b;
+    },
+    getSearchableFieldsOfTypeString(b) {
+      var c = b.filter(function (b) {
+        var c = a.path(b) instanceof mongoose.Schema.Types.String;
+        return c || void 0, c;
+      });
+      return c;
     },
   };
   return b;

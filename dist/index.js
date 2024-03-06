@@ -131,9 +131,13 @@ function mongooseBread(a, b) {
       ),
       {},
       { softDeleteOptions: d }
-    );
+    ),
+    f = e.searchableFields;
   if (
-    (checkSchema(a).hasMongoosePaginateV2AlreadyInstalled("index.js"),
+    (f &&
+      f.length &&
+      (e.searchableFields = checkSchema(a).getSearchableFieldsOfTypeString(f)),
+    checkSchema(a).hasMongoosePaginateV2AlreadyInstalled("index.js"),
     a.plugin(require("mongoose-paginate-v2")),
     (a.statics.browse = browseFactory(e)),
     (a.statics.read = readFactory(e)),
@@ -151,17 +155,17 @@ function mongooseBread(a, b) {
     e.softDelete)
   ) {
     checkSchema(a).hasMongooseDeleteAlreadyInstalled("index.js");
-    var f = e.softDeleteOptions;
-    if (((f.overrideMethods = !0), f.indexFields)) {
-      var g = f.deletedBy,
-        h = f.requestUserIdPath;
-      f.deletedBy = g && h && "string" == typeof h;
-      var i = ["deleted"];
-      f.deletedAt && i.push("deletedAt"),
-        f.deletedBy && i.push("deletedBy"),
-        (f.indexFields = i);
+    var g = e.softDeleteOptions;
+    if (((g.overrideMethods = !0), g.indexFields)) {
+      var h = g.deletedBy,
+        i = g.requestUserIdPath;
+      g.deletedBy = h && i && "string" == typeof i;
+      var j = ["deleted"];
+      g.deletedAt && j.push("deletedAt"),
+        g.deletedBy && j.push("deletedBy"),
+        (g.indexFields = j);
     }
-    a.plugin(require("mongoose-delete"), f),
+    a.plugin(require("mongoose-delete"), g),
       (a.statics.softDelete = softDeleteFactory(e)),
       (a.statics.rehabilitate = rehabilitateFactory(e));
   }
