@@ -11,10 +11,21 @@ const {
   parseRequestUserIdPath,
 } = require("../Parser");
 
+/**
+ *
+ * @param {String} str
+ * @returns {Boolean}
+ */
 function convertStringToBoolean(str) {
   return typeof str === "string" ? str === "true" || str === "1" : false;
 }
 
+/**
+ *
+ * @param {mongoose.Types.Schema} schema The Schema mongoose-bread is added to as plugin - provided by mongoose
+ * @param {import('../index').MongooseBreadOptions} pluginOptions
+ * @returns {(typeof helperMethods | typeof softDeleteHelperMethods)}
+ */
 function Factory(schema, pluginOptions = {}) {
   // read - single or bulk (browse)
   function createSingleReadOptions(request) {
@@ -163,6 +174,9 @@ function Factory(schema, pluginOptions = {}) {
     };
   }
 
+  /**
+   * @name helperMethods
+   */
   const helperMethods = {
     createBrowseOptions(request) {
       const options = createBulkReadOptions(request);
@@ -223,7 +237,10 @@ function Factory(schema, pluginOptions = {}) {
     return helperMethods;
   }
 
-  return {
+  /**
+   * @name softDeleteHelperMethods
+   */
+  const softDeleteHelperMethods = {
     ...helperMethods,
     createBrowseDeletedOptions(request) {
       request.__breadSoftDeleteHelperOptions = {
@@ -261,6 +278,8 @@ function Factory(schema, pluginOptions = {}) {
       };
     },
   };
+
+  return softDeleteHelperMethods;
 }
 
 module.exports = Factory;

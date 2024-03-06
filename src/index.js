@@ -8,6 +8,13 @@ const softDeleteFactory = require("./factories/softDeleteFactory");
 const rehabilitateFactory = require("./factories/rehabilitateFactory");
 const { checkSchema } = require("./RequestValidator");
 
+/**
+ * @typedef {typeof defaultPluginOptions} MongooseBreadOptions
+ */
+
+/**
+ * @name defaultPluginOptions
+ */
 const defaultPluginOptions = {
   defaultPageSize: 10,
   maxPageSize: 100,
@@ -63,7 +70,15 @@ const defaultPluginOptions = {
   },
 };
 
+/**
+ * Main Plugin function to use with Schema.plugin()
+ * @param {mongoose.Types.Schema} schema The Schema mongoose-bread is added to as plugin - provided by mongoose
+ * @param {MongooseBreadOptions} pluginOptions Config of mongoose-bread plugin
+ */
 function mongooseBread(schema, pluginOptions) {
+  /**
+   * @type {MongooseBreadOptions}
+   */
   const mongooseBreadOptions = mongooseBread.options || {};
 
   const _softDeleteOptions = {
@@ -127,6 +142,7 @@ function mongooseBread(schema, pluginOptions) {
   };
 }
 
+/** @module */
 module.exports = mongooseBread;
 module.exports.mongooseBread = mongooseBread;
 module.exports.MongooseBreadError = require("./MongooseBreadError");

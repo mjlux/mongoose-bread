@@ -2,8 +2,11 @@
 
 const mongoose = require("mongoose");
 const { expect } = require("chai");
-const mongooseBread = require("../dist/index");
 const { MongooseBreadError } = require("../dist/index");
+/**
+ * @type {import('../src/index').mongooseBread} mongooseBread plugin
+ */
+const mongooseBread = require("../dist/index");
 
 const MONGO_URI =
   "mongodb://127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000";
