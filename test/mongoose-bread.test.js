@@ -77,7 +77,7 @@ const ProductSchema = new mongoose.Schema(
   }
 );
 ProductSchema.plugin(mongooseBread, {
-  searchableFields: ["name"],
+  searchableFields: ["name", "price", "currency"],
 });
 const Product = mongoose.model("Product", ProductSchema);
 
@@ -138,7 +138,7 @@ const ProductAtlasSearchSchema = new mongoose.Schema(
   }
 );
 ProductAtlasSearchSchema.plugin(mongooseBread, {
-  searchableFields: ["name", "description"],
+  searchableFields: ["name", "description", "price"],
   enableAtlasSearch: true,
   atlasSearchIndex: "fulltexttest",
 });
@@ -1089,8 +1089,6 @@ describe("mongoose-bread", async function () {
     it("does not add softDelete methods to Model", function () {
       expect(Product.softDelete).to.equal(undefined);
       expect(Product.rehabilitate).to.equal(undefined);
-      expect(Product.softDelete).to.equal(undefined);
-      expect(Product.softDelete).to.equal(undefined);
     });
 
     it("does not add softDelete plugin helper methods to Model via helper getter", function () {
@@ -1184,6 +1182,20 @@ describe("mongoose-bread", async function () {
         "deleteOptions - valid params.id & body is empty Array"
       ).to.throw(
         'mongooseBread helper "createDeleteOptions" expects request.body to be an Object'
+      );
+    });
+
+    it("parses search requests with helper methods correctly", function () {
+      let mockRequest = { query: { search: "product" } };
+      const browseOptions = Product.breadHelper().createBrowseOptions({
+        ...mockRequest,
+      });
+
+      expect(browseOptions).to.be.an.instanceOf(Object);
+      expect(browseOptions).to.include.keys(["query", "paginateOptions"]);
+      expect(browseOptions.query.$or).to.be.of.length(
+        2,
+        "searchableField for path of type Number has not been removed"
       );
     });
 
@@ -1323,6 +1335,22 @@ describe("mongoose-bread", async function () {
   }); // end with transaction
 
   describe("with AtlasSearch enabled", function () {
+    it("removes fields that are not of type String from search path Array", function () {
+      let mockRequest = { query: { search: "product" } };
+      const browseOptions =
+        ProductAtlasSearch.breadHelper().createBrowseOptions({
+          ...mockRequest,
+        });
+
+      expect(browseOptions).to.be.an.instanceOf(Object);
+      expect(browseOptions).to.include.keys(["query", "paginateOptions"]);
+      expect(browseOptions.query.$search.text.path).to.be.an.instanceOf(Array);
+      expect(browseOptions.query.$search.text.path).to.be.of.length(
+        2,
+        "searchableField for path of type Number has not been removed"
+      );
+    });
+
     it("falls back to regex search query if wrongly configured", function () {
       return new Promise((resolve) => {
         const mockRequest = { query: { search: "5" } };
