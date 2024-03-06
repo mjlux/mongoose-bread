@@ -248,37 +248,37 @@ function Factory(a) {
         return _objectSpread(_objectSpread({}, d), e);
       },
     };
-  return l.softDelete
-    ? _objectSpread(
-        _objectSpread({}, m),
-        {},
-        {
-          createBrowseDeletedOptions(a) {
-            a.__breadSoftDeleteHelperOptions = {
-              customFind: "findDeleted",
-              customCount: "countDocumentsDeleted",
-              issuer: "createBrowseDeletedOptions",
-            };
-            var b = this.createBrowseOptions(a);
-            return delete a.__breadSoftDeleteHelperOptions, b;
-          },
-          createReadDeletedOptions(a) {
-            a.__breadSoftDeleteHelperOptions = {
-              customFind: "findOneDeleted",
-              issuer: "createReadDeletedOptions",
-            };
-            var b = this.createReadOptions(a);
-            return delete a.__breadSoftDeleteHelperOptions, b;
-          },
-          createRehabilitateOptions(a) {
-            var b = l.paramsIdKey,
-              c = this.createBrowseOptions(a),
-              d = c.paginateOptions,
-              e = a.params && a.params[b] ? j(a) : k(a);
-            return _objectSpread(_objectSpread({}, d), e);
-          },
-        }
-      )
-    : m;
+  if (!l.softDelete) return m;
+  var n = _objectSpread(
+    _objectSpread({}, m),
+    {},
+    {
+      createBrowseDeletedOptions(a) {
+        a.__breadSoftDeleteHelperOptions = {
+          customFind: "findDeleted",
+          customCount: "countDocumentsDeleted",
+          issuer: "createBrowseDeletedOptions",
+        };
+        var b = this.createBrowseOptions(a);
+        return delete a.__breadSoftDeleteHelperOptions, b;
+      },
+      createReadDeletedOptions(a) {
+        a.__breadSoftDeleteHelperOptions = {
+          customFind: "findOneDeleted",
+          issuer: "createReadDeletedOptions",
+        };
+        var b = this.createReadOptions(a);
+        return delete a.__breadSoftDeleteHelperOptions, b;
+      },
+      createRehabilitateOptions(a) {
+        var b = l.paramsIdKey,
+          c = this.createBrowseOptions(a),
+          d = c.paginateOptions,
+          e = a.params && a.params[b] ? j(a) : k(a);
+        return _objectSpread(_objectSpread({}, d), e);
+      },
+    }
+  );
+  return n;
 }
 module.exports = Factory;
