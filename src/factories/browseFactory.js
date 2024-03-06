@@ -1,5 +1,9 @@
 const toBreadErrorFactory = require("./toBreadErrorFactory");
 
+/**
+ * Factory function to create Model.browse() method
+ * @param {import('../index').MongooseBreadOptions} pluginOptions Config of mongoose-bread plugin
+ */
 function browseFactory(pluginOptions) {
   const { docs, acknowledged, readCount } = pluginOptions.customLabels;
   const toBreadResult = (result) => ({
@@ -42,6 +46,11 @@ function browseFactory(pluginOptions) {
     });
   }
 
+  /**
+   *
+   * @param {import('../index').MongooseBreadOptions} options
+   * @returns {Promise}
+   */
   return function browse(options) {
     options = { ...pluginOptions, ...options };
 

@@ -1,6 +1,10 @@
 const parseLeanFactory = require("./parseLeanFactory");
 const toBreadErrorFactory = require("./toBreadErrorFactory");
 
+/**
+ * Factory function to create Model.read() method
+ * @param {import('../index').MongooseBreadOptions} pluginOptions Config of mongoose-bread plugin
+ */
 function readFactory(pluginOptions) {
   const { docs, acknowledged, readCount } = pluginOptions.customLabels;
   const toBreadResult = (result) => ({

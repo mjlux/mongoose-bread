@@ -1,5 +1,9 @@
 const toBreadErrorFactory = require("./toBreadErrorFactory");
 
+/**
+ * Factory function to create Model.destroy() method
+ * @param {import('../index').MongooseBreadOptions} pluginOptions Config of mongoose-bread plugin
+ */
 function destroyFactory(pluginOptions) {
   const { softDelete } = pluginOptions;
   const { docs, acknowledged, deletedCount } = pluginOptions.customLabels;

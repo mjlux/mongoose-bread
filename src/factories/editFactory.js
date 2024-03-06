@@ -1,6 +1,10 @@
 const parseLeanFactory = require("./parseLeanFactory");
 const toBreadErrorFactory = require("./toBreadErrorFactory");
 
+/**
+ * Factory function to create Model.edit() method
+ * @param {import('../index').MongooseBreadOptions} pluginOptions Config of mongoose-bread plugin
+ */
 function editFactory(pluginOptions) {
   const { runUpdateTransaction } = pluginOptions;
   const { docs, acknowledged, modifiedCount } = pluginOptions.customLabels;
@@ -15,17 +19,18 @@ function editFactory(pluginOptions) {
     [modifiedCount]: 0,
   });
 
-  function runWithTransaction(Model, options){
-    const { query, payload, projection, populate, select, sort, lean, limit } = options;
+  function runWithTransaction(Model, options) {
+    const { query, payload, projection, populate, select, sort, lean, limit } =
+      options;
     const parseLean = parseLeanFactory(options);
 
-    const updateWithSession = session => {
-      session.startTransaction()
+    const updateWithSession = (session) => {
+      session.startTransaction();
       return Promise.all([
         Promise.resolve(session),
-        Model.updateMany(query, payload, {session})
-      ])
-    }
+        Model.updateMany(query, payload, { session }),
+      ]);
+    };
 
     const fetchDocs = ([session, updateResult]) => {
       return Promise.all([
@@ -39,23 +44,23 @@ function editFactory(pluginOptions) {
           .lean(lean)
           .limit(limit)
           .orFail()
-          .then(parseLean)
-      ])
-    }
+          .then(parseLean),
+      ]);
+    };
 
     const commitTransaction = ([session, updateResult, _docs]) => {
       return Promise.all([
         Promise.resolve(session),
         Promise.resolve(updateResult),
-        Promise.resolve(_docs), 
-        session.commitTransaction()
-      ])
-    }
+        Promise.resolve(_docs),
+        session.commitTransaction(),
+      ]);
+    };
 
     const endSession = ([session, updateResult, _docs]) => {
-      session.endSession()
-      return [updateResult, _docs]
-    }
+      session.endSession();
+      return [updateResult, _docs];
+    };
 
     return Model.startSession()
       .then(updateWithSession)
@@ -63,12 +68,12 @@ function editFactory(pluginOptions) {
       .then(commitTransaction)
       .then(endSession)
       .then(toBreadResult)
-      .catch(toBreadError)
-
+      .catch(toBreadError);
   } // end runWithTransaction
 
-  function runRaw(Model, options){
-    const { query, payload, projection, populate, select, sort, lean, limit } = options;
+  function runRaw(Model, options) {
+    const { query, payload, projection, populate, select, sort, lean, limit } =
+      options;
     const parseLean = parseLeanFactory(options);
 
     const mergeUpdateAndDocs = (result) =>
@@ -91,11 +96,9 @@ function editFactory(pluginOptions) {
   }
 
   return function edit(options) {
-
-    return runUpdateTransaction 
-      ? runWithTransaction(this, options) 
-      : runRaw(this, options)
-    
+    return runUpdateTransaction
+      ? runWithTransaction(this, options)
+      : runRaw(this, options);
   };
 }
 
