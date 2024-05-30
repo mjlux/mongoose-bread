@@ -65,3 +65,7 @@ type MongooseBreadErrorOptions = {
     statusCode: number
     result: Record<string, any>,
 }
+
+type ExpressQuery = {
+    [key: string]: undefined | string | string[] | ExpressQuery | ExpressQuery[];
+}

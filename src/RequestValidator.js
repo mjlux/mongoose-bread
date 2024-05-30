@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const MongooseBreadError = require("./MongooseBreadError");
+const MongooseBreadError = require("./mongooseBreadError");
 const { isValidObjectId } = require("mongoose");
 
 /**

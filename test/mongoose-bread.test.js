@@ -1080,11 +1080,12 @@ describe("mongoose-bread", async function () {
           return ProductSoftDelete.destroy(options);
         })
         .catch((error) => {
-          expect(error).to.be.an.instanceOf(MongooseBreadError);
+          expect(error).to.be.an.instanceOf(Object);
           expect(error.message).not.to.equal(null);
           expect(error.details).not.to.equal(null);
           expect(error.statusCode).not.to.equal(null);
           expect(error.result).not.to.equal(null);
+          expect(error.result.deletedCount).to.equal(0);
         });
     });
   }); // #endregion with softDelete
