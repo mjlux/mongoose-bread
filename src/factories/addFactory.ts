@@ -1,9 +1,11 @@
+import { Model } from "mongoose";
+
 const parseLeanFactory = require("./parseLeanFactory");
 const toBreadErrorFactory = require("./toBreadErrorFactory");
 
-function addFactory(pluginOptions) {
+function addFactory(pluginOptions:MongooseBreadOptions) {
   const { docs, acknowledged, createdCount } = pluginOptions.customLabels;
-  const toBreadResult = ([result, _docs]) => ({
+  const toBreadResult = ([result, _docs] : [any, any]) => ({
     [docs]: _docs,
     [acknowledged]: result.acknowledged,
     [createdCount]: result.createdCount,
@@ -14,14 +16,14 @@ function addFactory(pluginOptions) {
     [createdCount]: 0,
   });
 
-  return function add(options) {
+  return function add(this:Model<any>, options:MongooseBreadAddOptions) {
     const { bulk, payload, projection, populate, select, sort, lean, limit } =
       options;
     const parseLean = parseLeanFactory(options);
 
-    const mergeCreateAndCount = (result) => {
+    const mergeCreateAndCount = (result:any) => {
       const query = bulk
-        ? { _id: { $in: [...result.map((d) => d._id)] } }
+        ? { _id: { $in: [...result.map((d:any) => d._id)] } }
         : { _id: result?._id };
 
       return Promise.all([

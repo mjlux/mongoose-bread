@@ -69,3 +69,14 @@ type MongooseBreadErrorOptions = {
 type ExpressQuery = {
     [key: string]: undefined | string | string[] | ExpressQuery | ExpressQuery[];
 }
+
+type MongooseBreadAddOptions = {
+    bulk:boolean
+    payload: any
+    projection: Record<string, any>
+    populate: string | string[]
+    select: string
+    sort: string
+    lean: boolean
+    limit: number
+}

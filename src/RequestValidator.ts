@@ -1,7 +1,6 @@
 import { Request } from "express";
 import { Schema, SchemaType } from "mongoose";
 
-const mongoose = require("mongoose");
 const MongooseBreadError = require("./MongooseBreadError");
 const { isValidObjectId } = require("mongoose");
 
