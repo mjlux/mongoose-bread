@@ -57,3 +57,11 @@ type MongooseBreadOptions = {
 		readCount: string;
 	};
 };
+
+type MongooseBreadErrorOptions = {
+    message: string
+    details: string
+    issuer: string
+    statusCode: number
+    result: Record<string, any>,
+}
