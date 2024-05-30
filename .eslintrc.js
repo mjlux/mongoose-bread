@@ -13,6 +13,7 @@ module.exports = {
   rules: {
     "no-unsafe-finally": "off",
     "no-func-assign": "off",
+    "no-empty": "off",
   },
   overrides: [
     {

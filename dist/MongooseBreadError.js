@@ -27,8 +27,7 @@ function _objectSpread(a) {
 }
 function _defineProperty(a, b, c) {
   return (
-    (b = _toPropertyKey(b)),
-    b in a
+    (b = _toPropertyKey(b)) in a
       ? Object.defineProperty(a, b, {
           value: c,
           enumerable: !0,
@@ -60,39 +59,29 @@ function _toPropertyKey(a) {
   return "symbol" == typeof b ? b : b + "";
 }
 function _toPrimitive(a, b) {
-  if ("object" != typeof a || null === a) return a;
+  if ("object" != typeof a || !a) return a;
   var c = a[Symbol.toPrimitive];
-  if (c !== void 0) {
+  if (void 0 !== c) {
     var d = c.call(a, b || "default");
     if ("object" != typeof d) return d;
     throw new TypeError("@@toPrimitive must return a primitive value.");
   }
   return ("string" === b ? String : Number)(a);
 }
-function _classCallCheck(a, b) {
-  if (!(a instanceof b))
+function _classCallCheck(b, a) {
+  if (!(b instanceof a))
     throw new TypeError("Cannot call a class as a function");
 }
-function _inherits(a, b) {
-  if ("function" != typeof b && null !== b)
-    throw new TypeError("Super expression must either be null or a function");
-  (a.prototype = Object.create(b && b.prototype, {
-    constructor: { value: a, writable: !0, configurable: !0 },
-  })),
-    Object.defineProperty(a, "prototype", { writable: !1 }),
-    b && _setPrototypeOf(a, b);
-}
-function _createSuper(a) {
-  var b = _isNativeReflectConstruct();
-  return function () {
-    var c,
-      d = _getPrototypeOf(a);
-    if (b) {
-      var e = _getPrototypeOf(this).constructor;
-      c = Reflect.construct(d, arguments, e);
-    } else c = d.apply(this, arguments);
-    return _possibleConstructorReturn(this, c);
-  };
+function _callSuper(a, b, c) {
+  return (
+    (b = _getPrototypeOf(b)),
+    _possibleConstructorReturn(
+      a,
+      _isNativeReflectConstruct()
+        ? Reflect.construct(b, c || [], _getPrototypeOf(a).constructor)
+        : b.apply(a, c)
+    )
+  );
 }
 function _possibleConstructorReturn(a, b) {
   if (b && ("object" == typeof b || "function" == typeof b)) return b;
@@ -109,6 +98,15 @@ function _assertThisInitialized(a) {
     );
   return a;
 }
+function _inherits(a, b) {
+  if ("function" != typeof b && null !== b)
+    throw new TypeError("Super expression must either be null or a function");
+  (a.prototype = Object.create(b && b.prototype, {
+    constructor: { value: a, writable: !0, configurable: !0 },
+  })),
+    Object.defineProperty(a, "prototype", { writable: !1 }),
+    b && _setPrototypeOf(a, b);
+}
 function _wrapNativeSuper(a) {
   var b = "function" == typeof Map ? new Map() : void 0;
   return (
@@ -121,7 +119,7 @@ function _wrapNativeSuper(a) {
         throw new TypeError(
           "Super expression must either be null or a function"
         );
-      if ("undefined" != typeof b) {
+      if (void 0 !== b) {
         if (b.has(a)) return b.get(a);
         b.set(a, c);
       }
@@ -140,37 +138,30 @@ function _wrapNativeSuper(a) {
     _wrapNativeSuper(a)
   );
 }
-function _construct() {
-  return (
-    (_construct = _isNativeReflectConstruct()
-      ? Reflect.construct.bind()
-      : function (b, c, d) {
-          var e = [null];
-          e.push.apply(e, c);
-          var a = Function.bind.apply(b, e),
-            f = new a();
-          return d && _setPrototypeOf(f, d.prototype), f;
-        }),
-    _construct.apply(null, arguments)
-  );
+function _construct(a, b, c) {
+  if (_isNativeReflectConstruct())
+    return Reflect.construct.apply(null, arguments);
+  var d = [null];
+  d.push.apply(d, b);
+  var e = new (a.bind.apply(a, d))();
+  return c && _setPrototypeOf(e, c.prototype), e;
 }
 function _isNativeReflectConstruct() {
-  if ("undefined" == typeof Reflect || !Reflect.construct) return !1;
-  if (Reflect.construct.sham) return !1;
-  if ("function" == typeof Proxy) return !0;
   try {
-    return (
-      Boolean.prototype.valueOf.call(
-        Reflect.construct(Boolean, [], function () {})
-      ),
-      !0
+    var a = !Boolean.prototype.valueOf.call(
+      Reflect.construct(Boolean, [], function () {})
     );
-  } catch (a) {
-    return !1;
-  }
+  } catch (a) {}
+  return (_isNativeReflectConstruct = function () {
+    return !!a;
+  })();
 }
 function _isNativeFunction(a) {
-  return -1 !== Function.toString.call(a).indexOf("[native code]");
+  try {
+    return -1 !== Function.toString.call(a).indexOf("[native code]");
+  } catch (b) {
+    return "function" == typeof a;
+  }
 }
 function _setPrototypeOf(a, b) {
   return (
@@ -201,20 +192,19 @@ var defaultOptions = {
   },
   MongooseBreadError = (function (a) {
     function b(a) {
-      var d;
+      var c;
       _classCallCheck(this, b);
-      var e = _objectSpread(_objectSpread({}, defaultOptions), a);
+      var d = _objectSpread(_objectSpread({}, defaultOptions), a);
       return (
-        (d = c.call(this, e.message)),
-        (d.details = e.details),
-        (d.issuer = e.issuer),
-        (d.statusCode = e.statusCode),
-        (d.result = e.result),
-        d
+        (c = _callSuper(this, b, [d.message])),
+        (c.details = d.details),
+        (c.issuer = d.issuer),
+        (c.statusCode = d.statusCode),
+        (c.result = d.result),
+        c
       );
     }
-    _inherits(b, a);
-    var c = _createSuper(b);
-    return _createClass(b);
+    return _inherits(b, a), _createClass(b);
   })(_wrapNativeSuper(Error));
 module.exports = MongooseBreadError;
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJuYW1lcyI6WyJkZWZhdWx0T3B0aW9ucyIsIm1lc3NhZ2UiLCJkZXRhaWxzIiwiaXNzdWVyIiwic3RhdHVzQ29kZSIsInJlc3VsdCIsIk1vbmdvb3NlQnJlYWRFcnJvciIsImEiLCJiIiwib3B0aW9ucyIsImMiLCJfY2xhc3NDYWxsQ2hlY2siLCJfb3B0aW9ucyIsIl9vYmplY3RTcHJlYWQiLCJfY2FsbFN1cGVyIiwiX2luaGVyaXRzIiwiX2NyZWF0ZUNsYXNzIiwiX3dyYXBOYXRpdmVTdXBlciIsIkVycm9yIiwibW9kdWxlIiwiZXhwb3J0cyJdLCJzb3VyY2VzIjpbIi4uL3NyYy9Nb25nb29zZUJyZWFkRXJyb3IuanMiXSwic291cmNlc0NvbnRlbnQiOlsiY29uc3QgZGVmYXVsdE9wdGlvbnMgPSB7XG4gIG1lc3NhZ2U6IFwiTW9uZ29vc2VCcmVhZCBlbmNvdW50ZXJlZCBhbiBlcnJvclwiLFxuICBkZXRhaWxzOiBcIlwiLFxuICBpc3N1ZXI6IFwiTW9uZ29vc2VCcmVhZFwiLFxuICBzdGF0dXNDb2RlOiA1MDAsXG4gIHJlc3VsdDoge30sXG59O1xuXG5jbGFzcyBNb25nb29zZUJyZWFkRXJyb3IgZXh0ZW5kcyBFcnJvciB7XG4gIGNvbnN0cnVjdG9yKG9wdGlvbnMpIHtcbiAgICBjb25zdCBfb3B0aW9ucyA9IHsgLi4uZGVmYXVsdE9wdGlvbnMsIC4uLm9wdGlvbnMgfTtcblxuICAgIHN1cGVyKF9vcHRpb25zLm1lc3NhZ2UpO1xuICAgIHRoaXMuZGV0YWlscyA9IF9vcHRpb25zLmRldGFpbHM7XG4gICAgdGhpcy5pc3N1ZXIgPSBfb3B0aW9ucy5pc3N1ZXI7XG4gICAgdGhpcy5zdGF0dXNDb2RlID0gX29wdGlvbnMuc3RhdHVzQ29kZTtcbiAgICB0aGlzLnJlc3VsdCA9IF9vcHRpb25zLnJlc3VsdDtcbiAgfVxufVxuXG5tb2R1bGUuZXhwb3J0cyA9IE1vbmdvb3NlQnJlYWRFcnJvcjtcbiJdLCJtYXBwaW5ncyI6Imt4SEFBTSxDQUFBQSxjQUFjLENBQUcsQ0FDckJDLE9BQU8sQ0FBRSxvQ0FBb0MsQ0FDN0NDLE9BQU8sQ0FBRSxFQUFFLENBQ1hDLE1BQU0sQ0FBRSxlQUFlLENBQ3ZCQyxVQUFVLENBQUUsR0FBRyxDQUNmQyxNQUFNLENBQUUsQ0FBQyxDQUNYLENBQUMsQ0FFS0Msa0JBQWtCLFVBQUFDLENBQUEsRUFDdEIsU0FBQUMsRUFBWUMsQ0FBTyxDQUFFLEtBQUFDLENBQUEsQ0FBQUMsZUFBQSxNQUFBSCxDQUFBLEVBQ25CLEdBQU0sQ0FBQUksQ0FBUSxDQUFBQyxhQUFBLENBQUFBLGFBQUEsSUFBUWIsY0FBYyxFQUFLUyxDQUFPLENBQUUsQ0FBQyxPQUFBQyxDQUFBLENBQUFJLFVBQUEsTUFBQU4sQ0FBQSxFQUU3Q0ksQ0FBUSxDQUFDWCxPQUFPLEdBQ3RCUyxDQUFBLENBQUtSLE9BQU8sQ0FBR1UsQ0FBUSxDQUFDVixPQUFPLENBQy9CUSxDQUFBLENBQUtQLE1BQU0sQ0FBR1MsQ0FBUSxDQUFDVCxNQUFNLENBQzdCTyxDQUFBLENBQUtOLFVBQVUsQ0FBR1EsQ0FBUSxDQUFDUixVQUFVLENBQ3JDTSxDQUFBLENBQUtMLE1BQU0sQ0FBR08sQ0FBUSxDQUFDUCxNQUFNLENBQUFLLENBQy9CLENBQUMsT0FBQUssU0FBQSxDQUFBUCxDQUFBLENBQUFELENBQUEsRUFBQVMsWUFBQSxDQUFBUixDQUFBLEdBQUFTLGdCQUFBLENBVDhCQyxLQUFLLEdBWXRDQyxNQUFNLENBQUNDLE9BQU8sQ0FBR2Qsa0JBQWtCIiwiaWdub3JlTGlzdCI6W119
