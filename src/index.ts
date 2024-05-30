@@ -1,3 +1,5 @@
+import { Schema } from "mongoose";
+
 const helperFactory = require("./factories/helperFactory");
 const browseFactory = require("./factories/browseFactory");
 const readFactory = require("./factories/readFactory");
@@ -8,14 +10,7 @@ const softDeleteFactory = require("./factories/softDeleteFactory");
 const rehabilitateFactory = require("./factories/rehabilitateFactory");
 const { checkSchema } = require("./RequestValidator");
 
-/**
- * @typedef {typeof defaultPluginOptions} MongooseBreadOptions
- */
-
-/**
- * @name defaultPluginOptions
- */
-const defaultPluginOptions = {
+const defaultPluginOptions:MongooseBreadOptions = {
   defaultPageSize: 10,
   maxPageSize: 100,
   searchableFields: [],
@@ -70,15 +65,8 @@ const defaultPluginOptions = {
   },
 };
 
-/**
- * Main Plugin function to use with Schema.plugin()
- * @param {mongoose.Types.Schema} schema The Schema mongoose-bread is added to as plugin - provided by mongoose
- * @param {MongooseBreadOptions} pluginOptions Config of mongoose-bread plugin
- */
-function mongooseBread(schema, pluginOptions) {
-  /**
-   * @type {MongooseBreadOptions}
-   */
+const mongooseBread:MongooseBreadPlugin = function (schema:Schema, pluginOptions:Partial<MongooseBreadOptions> ) {
+
   const mongooseBreadOptions = mongooseBread.options || {};
 
   const _softDeleteOptions = {
@@ -113,13 +101,10 @@ function mongooseBread(schema, pluginOptions) {
 
   // add runValidators option to update hooks
   if (_pluginOptions.runUpdateValidators) {
-    ["findOneAndUpdate", "updateMany", "updateOne", "update"].forEach(
-      (method) => {
-        schema.pre(method, function () {
-          this.setOptions({ runValidators: true });
-        });
-      }
-    );
+    schema.pre('findOneAndUpdate', function () { this.setOptions({ runValidators: true }); });
+    schema.pre('updateMany', function () { this.setOptions({ runValidators: true }); });
+    schema.pre('updateOne', function () { this.setOptions({ runValidators: true }); });
+    schema.pre('update', function () { this.setOptions({ runValidators: true }); });
   }
 
   // register optional mongoose-delete dependency
@@ -147,6 +132,8 @@ function mongooseBread(schema, pluginOptions) {
     return helperFactory(schema, _pluginOptions);
   };
 }
+const defaultGlobalPluginOptions:Partial<MongooseBreadOptions> = {}
+mongooseBread.prototype.options = defaultGlobalPluginOptions
 
 /** @module */
 module.exports = mongooseBread;
