@@ -86,13 +86,19 @@ const ProductSoftDeleteSchema = new mongoose.Schema(
     name: String,
     price: Number,
     currency: String,
+    tags: [String],
+    options: [
+      {
+        name: String,
+      },
+    ],
   },
   {
     timestamps: true,
   }
 );
 ProductSoftDeleteSchema.plugin(mongooseBread, {
-  searchableFields: ["name"],
+  searchableFields: ["name", "tags", "options.name"],
   softDelete: true,
   softDeleteOptions: {
     validateBeforeDelete: true,
@@ -168,6 +174,7 @@ const ProductAtlasSearchWrongConfig = mongoose.model(
 );
 
 describe("mongoose-bread", async function () {
+  // #region before
   before(function (done) {
     mongoose.connect(
       MONGO_URI,
@@ -226,6 +233,8 @@ describe("mongoose-bread", async function () {
           name: `ProductSoftDelete #${i + 1}`,
           price: (i + 1) * 10,
           currency: i < 5 ? "EUR" : "USD",
+          tags: i < 5 ? ["my", "awesome", "product"] : ["not", "listed"],
+          options: i < 5 ? [{ name: `Option ${i + 1}` }] : [],
         })
     );
     return ProductSoftDelete.create(products);
@@ -255,7 +264,9 @@ describe("mongoose-bread", async function () {
     );
     return ProductAtlasSearch.create(products);
   });
+  // #endregion before
 
+  // #region custom properties
   describe("with custom property access Keys", function () {
     it("reads a document correctly", function () {
       return ProductCustomKeys.create({ name: "temp" })
@@ -381,8 +392,9 @@ describe("mongoose-bread", async function () {
           expect(result.deletedCount).to.equal(3);
         });
     });
-  }); // end with custom property access Keys
+  }); // #endregion custom properties
 
+  // #region custom labels
   describe("with custom Labels", function () {
     it("applies customLabels on browse result", function () {
       const mockRequest = {};
@@ -478,8 +490,9 @@ describe("mongoose-bread", async function () {
           ]);
         });
     });
-  }); // end with custom Labels
+  }); // #endregion custom labels
 
+  // #region with softDelete
   describe("with softDelete", function () {
     it("adds plugin methods to Model", function () {
       expect(ProductSoftDelete.browse).to.be.an.instanceOf(Function);
@@ -697,6 +710,31 @@ describe("mongoose-bread", async function () {
       return ProductSoftDelete.browse(options).then((result) => {
         expect(result.docs).to.have.length(1);
         expect(result.docs[0].name).to.equal("ProductSoftDelete #5");
+      });
+    });
+
+    it("executes a search request on arrays containing strings", function () {
+      const mockRequest = { query: { search: "awesome" } };
+      const options = ProductSoftDelete.breadHelper().createBrowseOptions({
+        ...mockRequest,
+      });
+      return ProductSoftDelete.browse(options).then((result) => {
+        expect(result.docs).to.have.length(5);
+        expect(result.docs[0].name).to.include("ProductSoftDelete #");
+      });
+    });
+
+    it("executes a search request on arrays containing objects with fields of type string", function () {
+      const mockRequest = { query: { search: "Option" } };
+      const options = ProductSoftDelete.breadHelper().createBrowseOptions({
+        ...mockRequest,
+      });
+      return ProductSoftDelete.browse(options).then((result) => {
+        expect(result.docs).to.have.length(5);
+        expect(result.docs[0].name).to.include("ProductSoftDelete #");
+        expect(result.docs[0].options).to.be.an.instanceOf(Array);
+        expect(result.docs[0].options).to.have.length(1);
+        expect(result.docs[0].options[0].name).to.include("Option");
       });
     });
 
@@ -1049,8 +1087,9 @@ describe("mongoose-bread", async function () {
           expect(error.result).not.to.equal(null);
         });
     });
-  }); // end with softDelete
+  }); // #endregion with softDelete
 
+  // #region without softDelete
   describe("without softDelete", function () {
     it("adds plugin methods to Model", function () {
       expect(Product.browse).to.be.an.instanceOf(Function);
@@ -1277,8 +1316,9 @@ describe("mongoose-bread", async function () {
       expect(bulkDeleteOptions).property("userId").to.equal(null);
       expect(bulkDeleteOptions).property("bulk").to.equal(true);
     });
-  }); // end without softDelete
+  }); // #endregion without softDelete
 
+  // #region with transaction
   describe("with transaction", function () {
     it("edits a document correctly", function () {
       return ProductTransaction.create({ name: "temp" })
@@ -1332,8 +1372,9 @@ describe("mongoose-bread", async function () {
           expect(doc1.currency).to.equal("USD");
         });
     });
-  }); // end with transaction
+  }); // #endregion with transaction
 
+  // #region Atlas Search
   describe("with AtlasSearch enabled", function () {
     it("removes fields that are not of type String from search path Array", function () {
       let mockRequest = { query: { search: "product" } };
@@ -1402,9 +1443,10 @@ describe("mongoose-bread", async function () {
           expect(err.toString().startsWith("MongoServerError:")).to.be.true;
         });
     });
-  }); // end Atlas Search
+  }); // #endregion Atlas Search
 
+  // #region after
   after(function (done) {
     mongoose.connection.db.dropDatabase(() => mongoose.disconnect(done));
-  });
+  }); // #endregion after
 });
