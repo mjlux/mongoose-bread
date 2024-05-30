@@ -1,4 +1,4 @@
-class MongooseBreadError extends Error {
+module.exports = class MongooseBreadError extends Error {
 
   message = "MongooseBread encountered an error"
   details = ""
@@ -15,5 +15,3 @@ class MongooseBreadError extends Error {
     if(options.result) this.result = options.result;
   }
 }
-
-module.exports = MongooseBreadError;
