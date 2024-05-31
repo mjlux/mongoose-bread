@@ -124,13 +124,14 @@ function checkSchema(schema) {
     getSearchableFieldsOfTypeString(searchableFields) {
       const validFields = searchableFields.filter((field) => {
         const path = schema.path(field);
+        if (!path) return false;
         if (path instanceof mongoose.Schema.Types.String) return true;
-
         const isArray = path instanceof mongoose.Schema.Types.Array;
-        const hasStringCaster =
-          path.caster && path.caster instanceof mongoose.Schema.Types.String;
-        if (isArray && hasStringCaster) return true;
-
+        if (isArray) {
+          const hasStringCaster =
+            path.caster && path.caster instanceof mongoose.Schema.Types.String;
+          if (hasStringCaster) return true;
+        }
         console.warn(
           `schema.path(${field}) is not of type String or String[] - searchableField ${field} has been removed`
         );
