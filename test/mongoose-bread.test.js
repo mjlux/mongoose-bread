@@ -77,7 +77,7 @@ const ProductSchema = new mongoose.Schema(
   }
 );
 ProductSchema.plugin(mongooseBread, {
-  searchableFields: ["name", "price", "currency"],
+  searchableFields: ["name", "price", "currency", "nonExistingField"],
 });
 const Product = mongoose.model("Product", ProductSchema);
 
@@ -1234,7 +1234,21 @@ describe("mongoose-bread", async function () {
       expect(browseOptions).to.include.keys(["query", "paginateOptions"]);
       expect(browseOptions.query.$or).to.be.of.length(
         2,
-        "searchableField for path of type Number has not been removed"
+        "searchableField for path of type Number and nonExistingField have not been removed"
+      );
+    });
+
+    it("removes searchableFields that ar not present in Schema.path", function () {
+      let mockRequest = { query: { search: "product" } };
+      const browseOptions = Product.breadHelper().createBrowseOptions({
+        ...mockRequest,
+      });
+
+      expect(browseOptions).to.be.an.instanceOf(Object);
+      expect(browseOptions).to.include.keys(["query", "paginateOptions"]);
+      expect(browseOptions.query.$or).to.be.of.length(
+        2,
+        "searchableField for path of type Number and nonExistingField have not been removed"
       );
     });
 
