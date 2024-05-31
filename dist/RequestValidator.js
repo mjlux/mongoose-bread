@@ -103,15 +103,18 @@ function checkSchema(a) {
     getSearchableFieldsOfTypeString(b) {
       var c = b.filter(function (b) {
         var c = a.path(b);
+        if (!c) return !1;
         if (c instanceof mongoose.Schema.Types.String) return !0;
-        var d = c instanceof mongoose.Schema.Types.Array,
-          e = c.caster && c.caster instanceof mongoose.Schema.Types.String;
+        var d = c instanceof mongoose.Schema.Types.Array;
+        if (d) {
+          var e = c.caster && c.caster instanceof mongoose.Schema.Types.String;
+          if (e) return !0;
+        }
         return (
-          !!(d && e) ||
-          (console.warn(
+          console.warn(
             `schema.path(${b}) is not of type String or String[] - searchableField ${b} has been removed`
           ),
-          !1)
+          !1
         );
       });
       return c;
