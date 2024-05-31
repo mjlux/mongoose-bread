@@ -103,7 +103,14 @@ function checkSchema(a) {
     getSearchableFieldsOfTypeString(b) {
       var c = b.filter(function (b) {
         var c = a.path(b);
-        if (!c) return !1;
+        if (!c) {
+          return (
+            console.warn(
+              `schema.path(${b}) does not exist - searchableField ${b} has been removed`
+            ),
+            !1
+          );
+        }
         if (c instanceof mongoose.Schema.Types.String) return !0;
         var d = c instanceof mongoose.Schema.Types.Array;
         if (d) {
