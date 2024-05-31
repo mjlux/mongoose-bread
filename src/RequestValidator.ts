@@ -1,5 +1,5 @@
 import { Request } from "express";
-import { Schema, SchemaType } from "mongoose";
+import { Schema } from "mongoose";
 
 const MongooseBreadError = require("./MongooseBreadError");
 const { isValidObjectId } = require("mongoose");
@@ -118,11 +118,19 @@ function checkSchema(schema: Schema) {
 		},
 		getSearchableFieldsOfTypeString(searchableFields: string[]) {
 			const validFields = searchableFields.filter((field) => {
-				const path: SchemaType = schema.path(field);
+				const path = schema.path(field);
+				if (!path) {
+					const warningMessage = `schema.path(${field}) does not exist - searchableField ${field} has been removed`;
+					console.warn(warningMessage);
+					return false;
+				}
 				if (path instanceof Schema.Types.String) return true;
 				const isArray = path instanceof Schema.Types.Array;
-				if (isArray && path.caster && path.caster instanceof Schema.Types.String) return true;
-        const warningMessage = `schema.path(${field}) is not of type String or String[] - searchableField ${field} has been removed`
+				if (isArray) {
+					const hasStringCaster = path.caster && path.caster instanceof Schema.Types.String;
+					if (hasStringCaster) return true;
+				}
+				const warningMessage = `schema.path(${field}) is not of type String or String[] - searchableField ${field} has been removed`;
 				console.warn(warningMessage);
 				return false;
 			});
