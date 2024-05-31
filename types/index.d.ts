@@ -80,3 +80,8 @@ type MongooseBreadAddOptions = {
     lean: boolean
     limit: number
 }
+
+type MongooseBreadDestroyOptions = {
+    bulk:boolean
+    query: Record<string,any>
+}
