@@ -1,11 +1,11 @@
-function parseLeanFactory(options) {
+function parseLeanFactory(options:LeanOptions) {
   const { lean, leanWithId, leanWithout_id } = options;
 
   return !(lean && leanWithId)
-    ? function skip(result) {
+    ? function skip(result:any) {
         return result;
       }
-    : function parseLean(result) {
+    : function parseLean(result:any) {
         if (Array.isArray(result)) {
           result.forEach((doc) => {
             if (doc._id) doc.id = String(doc._id);

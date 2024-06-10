@@ -85,3 +85,7 @@ type MongooseBreadDestroyOptions = {
     bulk:boolean
     query: Record<string,any>
 }
+
+type LeanOptions = {
+	lean:boolean, leanWithId:boolean, leanWithout_id:boolean
+}
