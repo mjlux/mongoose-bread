@@ -1,13 +1,12 @@
+import { Model } from "mongoose";
+import { MongooseBreadOptions, MongooseBreadReadOptions } from "../../types";
+
 const parseLeanFactory = require("./parseLeanFactory");
 const toBreadErrorFactory = require("./toBreadErrorFactory");
 
-/**
- * Factory function to create Model.read() method
- * @param {import('../index').MongooseBreadOptions} pluginOptions Config of mongoose-bread plugin
- */
-function readFactory(pluginOptions) {
+function readFactory(pluginOptions:MongooseBreadOptions) {
   const { docs, acknowledged, readCount } = pluginOptions.customLabels;
-  const toBreadResult = (result) => ({
+  const toBreadResult = (result:any) => ({
     [docs]: [result],
     [acknowledged]: true,
     [readCount]: 1,
@@ -18,7 +17,7 @@ function readFactory(pluginOptions) {
     [readCount]: 0,
   });
 
-  return function read(options) {
+  return function read(this:Model<any>, options:MongooseBreadOptions & MongooseBreadReadOptions) {
     const {
       customFind,
       query,
@@ -31,6 +30,7 @@ function readFactory(pluginOptions) {
     } = options;
     const parseLean = parseLeanFactory(options);
 
+    // @ts-ignore
     return this[customFind](query, projection)
       .populate(populate)
       .select(select)

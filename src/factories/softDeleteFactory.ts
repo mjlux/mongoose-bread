@@ -4,10 +4,6 @@ import { SoftDeleteModel } from "mongoose-delete";
 
 const toBreadErrorFactory = require("./toBreadErrorFactory");
 
-/**
- * Factory function to create Model.softDelete() method
- * @param {import('../index').MongooseBreadOptions} pluginOptions Config of mongoose-bread plugin
- */
 function softDeleteFactory(pluginOptions: MongooseBreadOptions) {
 	const { deletedBy } = pluginOptions.softDeleteOptions;
 	const { docs, acknowledged, modifiedCount } = pluginOptions.customLabels;

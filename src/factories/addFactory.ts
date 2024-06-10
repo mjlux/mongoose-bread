@@ -1,4 +1,5 @@
 import { Model } from "mongoose";
+import { MongooseBreadAddOptions, MongooseBreadOptions } from "../../types";
 
 const parseLeanFactory = require("./parseLeanFactory");
 const toBreadErrorFactory = require("./toBreadErrorFactory");

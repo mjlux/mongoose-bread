@@ -4,10 +4,6 @@ import { Model } from "mongoose";
 
 const toBreadErrorFactory = require("./toBreadErrorFactory");
 
-/**
- * Factory function to create Model.rehabilitate() method
- * @param {import('../index').MongooseBreadOptions} pluginOptions Config of mongoose-bread plugin
- */
 function rehabilitateFactory(pluginOptions: MongooseBreadOptions) {
 	const { docs, modifiedCount, acknowledged } = pluginOptions.customLabels;
 	const toBreadResult = ([result, _docs]: [any, any[]]) => ({
