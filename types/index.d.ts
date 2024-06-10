@@ -1,3 +1,5 @@
+import { FilterQuery, PaginateOptions } from "mongoose";
+
 type MongooseBreadPlugin = {
 	options?: Partial<MongooseBreadOptions>;
 	(schema: Schema, pluginOptions: Partial<MongooseBreadOptions>): void;
@@ -59,33 +61,42 @@ type MongooseBreadOptions = {
 };
 
 type MongooseBreadErrorOptions = {
-    message: string
-    details: string
-    issuer: string
-    statusCode: number
-    result: Record<string, any>,
-}
+	message: string;
+	details: string;
+	issuer: string;
+	statusCode: number;
+	result: Record<string, any>;
+};
 
 type ExpressQuery = {
-    [key: string]: undefined | string | string[] | ExpressQuery | ExpressQuery[];
-}
+	[key: string]: undefined | string | string[] | ExpressQuery | ExpressQuery[];
+};
+
+
+
+type MongooseBreadBrowseOptions = {
+	query: FilterQuery<any>;
+	paginateOptions: PaginateOptions & {leanWithout_id:boolean, customCount:'countDocuments'|'countDocumentsDeleted'};
+};
 
 type MongooseBreadAddOptions = {
-    bulk:boolean
-    payload: any
-    projection: Record<string, any>
-    populate: string | string[]
-    select: string
-    sort: string
-    lean: boolean
-    limit: number
-}
+	bulk: boolean;
+	payload: any;
+	projection: Record<string, any>;
+	populate: string | string[];
+	select: string;
+	sort: string;
+	lean: boolean;
+	limit: number;
+};
 
 type MongooseBreadDestroyOptions = {
-    bulk:boolean
-    query: Record<string,any>
-}
+	bulk: boolean;
+	query: Record<string, any>;
+};
 
 type LeanOptions = {
-	lean:boolean, leanWithId:boolean, leanWithout_id:boolean
-}
+	lean: boolean;
+	leanWithId: boolean;
+	leanWithout_id: boolean;
+};
