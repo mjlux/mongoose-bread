@@ -1,7 +1,7 @@
 const MongooseBreadError = require("../MongooseBreadError");
 
 function toBreadErrorFactory(result = {}) {
-  return function toBreadError(error) {
+  return function toBreadError(error:Error) {
     if (error.message.startsWith("No document found")) {
       throw new MongooseBreadError({
         message: "Not Found",
