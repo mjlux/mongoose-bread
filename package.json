@@ -46,7 +46,7 @@
     "softdelete"
   ],
   "dependencies": {
-    "mongoose-delete": "^0.5.4",
+    "mongoose-delete": "^1.0.0",
     "mongoose-paginate-v2": "^1.7.1"
   },
   "devDependencies": {

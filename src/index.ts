@@ -1,4 +1,5 @@
 import { Schema } from "mongoose";
+import { MongooseBreadOptions, MongooseBreadPlugin } from "../types";
 
 const helperFactory = require("./factories/helperFactory");
 const browseFactory = require("./factories/browseFactory");
