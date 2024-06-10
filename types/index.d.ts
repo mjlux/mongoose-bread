@@ -90,9 +90,14 @@ type MongooseBreadAddOptions = {
 	limit: number;
 };
 
+type MongooseBreadSoftDeleteOptions = {
+	query: FilterQuery<any>;
+	userId: string;
+};
+
 type MongooseBreadDestroyOptions = {
+	query: FilterQuery<any>;
 	bulk: boolean;
-	query: Record<string, any>;
 };
 
 type LeanOptions = {
