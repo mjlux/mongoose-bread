@@ -1,5 +1,6 @@
 import { Request } from "express";
 import { Schema } from "mongoose";
+import { ExpressQuery, MongooseBreadErrorOptions, MongooseBreadOptions } from "../types";
 
 const { checkRequest } = require("./RequestValidator");
 const MongooseBreadError = require("./mongooseBreadError");

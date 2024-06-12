@@ -1,5 +1,6 @@
 import { Model } from "mongoose";
 import { SoftDeleteModel } from "mongoose-delete";
+import { MongooseBreadDestroyOptions, MongooseBreadOptions } from "../../types";
 
 const toBreadErrorFactory = require("./toBreadErrorFactory");
 

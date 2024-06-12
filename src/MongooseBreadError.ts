@@ -1,3 +1,5 @@
+import { MongooseBreadErrorOptions } from "../types"
+
 module.exports = class MongooseBreadError extends Error {
 
   message = "MongooseBread encountered an error"

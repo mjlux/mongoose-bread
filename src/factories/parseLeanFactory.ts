@@ -1,3 +1,5 @@
+import { LeanOptions } from "../../types";
+
 function parseLeanFactory(options:LeanOptions) {
   const { lean, leanWithId, leanWithout_id } = options;
 
