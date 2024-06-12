@@ -648,7 +648,7 @@ describe("mongoose-bread", async function () {
       expect(readDeletedOptions)
         .property("customFind")
         .to.equal("findOneDeleted");
-      expect(readDeletedOptions).property("customCount").to.equal(false);
+      expect(readDeletedOptions).property("customCount").to.equal("countDocumentsDeleted");
       expect(rehabilitateOptions).to.be.an.instanceOf(Object);
       expect(rehabilitateOptions).to.include.keys(["query"]);
       expect(bulkRehabilitateOptions).to.be.an.instanceOf(Object);
@@ -768,6 +768,8 @@ describe("mongoose-bread", async function () {
         })
         .then((result) => {
           expect(result).to.be.an.instanceOf(Object);
+          expect(result.acknowledged).to.equal(true)
+          expect(result.readCount).to.equal(1)
           expect(result.docs).to.be.an.instanceOf(Array);
           expect(result.docs).to.have.length(1);
           const doc = result.docs[0];

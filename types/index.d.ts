@@ -39,7 +39,7 @@ type MongooseBreadOptions = {
 	lean: boolean;
 	leanWithId: boolean; // override mongoose-paginate-v2 default - was true
 	leanWithout_id: boolean; // additional mongoose-bread option to remove '_id' from lean results
-	customFind: 'find' | 'findOne' | 'findDeleted' | 'findOneDeleted';
+	customFind: "find" | "findOne" | "findDeleted" | "findOneDeleted";
 	customLabels: {
 		docs: string;
 		limit: string;
@@ -57,6 +57,14 @@ type MongooseBreadOptions = {
 		deletedCount: string;
 		createdCount: string;
 		readCount: string;
+	};
+};
+
+type MongooseBreadSoftDeleteHelperOptions = {
+	__breadSoftDeleteHelperOptions?: {
+		issuer: string;
+		customFind: string;
+		customCount: "countDocuments" | "countDocumentsDeleted";
 	};
 };
 
