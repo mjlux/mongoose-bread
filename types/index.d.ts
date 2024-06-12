@@ -92,6 +92,12 @@ type MongooseBreadReadOptions = PaginateOptions & {
 	query: FilterQuery<any>;
 };
 
+type MongooseBreadEditOptions = PaginateOptions & {
+	query: FilterQuery<any>;
+	payload: any;
+	bulk?: boolean;
+};
+
 type MongooseBreadAddOptions = {
 	bulk: boolean;
 	payload: any;

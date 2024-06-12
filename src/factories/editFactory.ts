@@ -1,14 +1,13 @@
+import { ClientSession, Document, Model, SessionOperation, SessionStarter } from "mongoose";
+import { MongooseBreadEditOptions, MongooseBreadOptions } from "../../types";
+
 const parseLeanFactory = require("./parseLeanFactory");
 const toBreadErrorFactory = require("./toBreadErrorFactory");
 
-/**
- * Factory function to create Model.edit() method
- * @param {import('../index').MongooseBreadOptions} pluginOptions Config of mongoose-bread plugin
- */
-function editFactory(pluginOptions) {
+function editFactory(pluginOptions:MongooseBreadOptions) {
   const { runUpdateTransaction } = pluginOptions;
   const { docs, acknowledged, modifiedCount } = pluginOptions.customLabels;
-  const toBreadResult = ([result, _docs]) => ({
+  const toBreadResult = ([result, _docs]: [any, any[]]) => ({
     [docs]: _docs,
     [acknowledged]: result.acknowledged ?? true,
     [modifiedCount]: result.modifiedCount ?? result.nModified,
@@ -19,12 +18,12 @@ function editFactory(pluginOptions) {
     [modifiedCount]: 0,
   });
 
-  function runWithTransaction(Model, options) {
+  function runWithTransaction(Model:Model<any>, options:MongooseBreadEditOptions) {
     const { query, payload, projection, populate, select, sort, lean, limit } =
       options;
     const parseLean = parseLeanFactory(options);
 
-    const updateWithSession = (session) => {
+    const updateWithSession = (session:ClientSession) => {
       session.startTransaction();
       return Promise.all([
         Promise.resolve(session),
@@ -32,23 +31,23 @@ function editFactory(pluginOptions) {
       ]);
     };
 
-    const fetchDocs = ([session, updateResult]) => {
+    const fetchDocs = ([session, updateResult]: [ClientSession, any]) => {
       return Promise.all([
         Promise.resolve(session),
         Promise.resolve(updateResult),
         Model.find(query, projection)
           .session(session)
-          .populate(populate)
+          .populate(populate as string)
           .select(select)
-          .sort(sort)
+          .sort(sort as string)
           .lean(lean)
-          .limit(limit)
+          .limit(limit as number)
           .orFail()
           .then(parseLean),
       ]);
     };
 
-    const commitTransaction = ([session, updateResult, _docs]) => {
+    const commitTransaction = ([session, updateResult, _docs]: [ClientSession, any, any[]]) => {
       return Promise.all([
         Promise.resolve(session),
         Promise.resolve(updateResult),
@@ -57,7 +56,7 @@ function editFactory(pluginOptions) {
       ]);
     };
 
-    const endSession = ([session, updateResult, _docs]) => {
+    const endSession = ([session, updateResult, _docs, _]: [ClientSession, any, any[], any]): [any, any[]] => {
       session.endSession();
       return [updateResult, _docs];
     };
@@ -71,20 +70,20 @@ function editFactory(pluginOptions) {
       .catch(toBreadError);
   } // end runWithTransaction
 
-  function runRaw(Model, options) {
+  function runRaw(Model:Model<any>, options:MongooseBreadEditOptions) {
     const { query, payload, projection, populate, select, sort, lean, limit } =
       options;
     const parseLean = parseLeanFactory(options);
 
-    const mergeUpdateAndDocs = (result) =>
+    const mergeUpdateAndDocs = (result:any) =>
       Promise.all([
         Promise.resolve(result),
         Model.find(query, projection)
-          .populate(populate)
+          .populate(populate as string)
           .select(select)
-          .sort(sort)
+          .sort(sort as string)
           .lean(lean)
-          .limit(limit)
+          .limit(limit as number)
           .orFail()
           .then(parseLean),
       ]);
@@ -95,7 +94,7 @@ function editFactory(pluginOptions) {
       .catch(toBreadError);
   }
 
-  return function edit(options) {
+  return function edit(this:Model<any>, options:MongooseBreadEditOptions) {
     return runUpdateTransaction
       ? runWithTransaction(this, options)
       : runRaw(this, options);
