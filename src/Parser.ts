@@ -3,7 +3,7 @@ import { Schema } from "mongoose";
 import { ExpressQuery, MongooseBreadErrorOptions, MongooseBreadOptions } from "../types";
 
 const { checkRequest } = require("./RequestValidator");
-const MongooseBreadError = require("./mongooseBreadError");
+const MongooseBreadError = require("./MongooseBreadError");
 
 function parseSelect(query: ExpressQuery) {
 	let fields: string[] = [];
