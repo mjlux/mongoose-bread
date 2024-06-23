@@ -109,12 +109,26 @@ function parseQuery(a, b, c) {
   return a.query
     ? a.query
     : a.search
-    ? parseSearchFilter(a, b)
+    ? parseSearchFilter(a, c, b)
     : parseQueryFilter(a, c);
 }
-function parseSearchFilter(a, b) {
-  var c = b.searchableFields;
-  if (!Array.isArray(c) || !c.length)
+function removeKeysThatAreNotInSchema(a, b) {
+  var c = Object.keys(b.paths);
+  return Object.keys(a).reduce(function (a, b) {
+    return c.includes(b) || delete a[b], a;
+  }, _objectSpread({}, a));
+}
+function jsonStringFromQueryWithComparison(a) {
+  return JSON.stringify(a).replace(
+    /\b(gt|gte|lt|lte|in|eq|ne)\b/g,
+    function (a) {
+      return `$${a}`;
+    }
+  );
+}
+function parseSearchFilter(a, b, c) {
+  var d = c.searchableFields;
+  if (!Array.isArray(d) || !d.length)
     throw new MongooseBreadError({
       message: "Search is not availabe for this resource",
       details:
@@ -122,34 +136,33 @@ function parseSearchFilter(a, b) {
       statusCode: 404,
       issuer: `MongooseBreadHelper parseSearchFilter`,
     });
-  if (b.enableAtlasSearch && b.atlasSearchIndex) {
-    var d = {
-      $search: {
-        index: b.atlasSearchIndex,
-        text: { query: a.search, path: c },
-      },
-    };
-    return JSON.stringify(d);
+  var e = removeKeysThatAreNotInSchema(a, b);
+  if (c.enableAtlasSearch && c.atlasSearchIndex) {
+    var f = _objectSpread(
+      _objectSpread({}, e),
+      {},
+      {
+        $search: {
+          index: c.atlasSearchIndex,
+          text: { query: a.search, path: d },
+        },
+      }
+    );
+    return jsonStringFromQueryWithComparison(f);
   }
-  var e = a.search.split(" ").reduce(function (a, b) {
-    var d = c.map(function (a) {
+  var g = a.search.split(" ").reduce(function (a, b) {
+    var c = d.map(function (a) {
       return { [a]: { $regex: b, $options: "i" } };
     });
-    return a.concat(d);
+    return a.concat(c);
   }, []);
-  return JSON.stringify({ $or: e });
+  return jsonStringFromQueryWithComparison(
+    _objectSpread(_objectSpread({}, e), {}, { $or: g })
+  );
 }
 function parseQueryFilter(a, b) {
-  var c = Object.keys(b.paths),
-    d = Object.keys(a).reduce(function (a, b) {
-      return c.includes(b) || delete a[b], a;
-    }, _objectSpread({}, a));
-  return JSON.stringify(d).replace(
-    /\b(gt|gte|lt|lte|in|eq|ne)\b/g,
-    function (a) {
-      return `$${a}`;
-    }
-  );
+  var c = removeKeysThatAreNotInSchema(a, b);
+  return jsonStringFromQueryWithComparison(c);
 }
 function parseProjection(a, b) {
   return a.projection
