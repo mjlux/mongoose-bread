@@ -713,6 +713,24 @@ describe("mongoose-bread", async function () {
       });
     });
 
+    it("executes a search request with additional queryParams correctly", function () {
+      const mockRequest = {
+        query: {
+          search: "Product",
+          price: { lt: "50" },
+          currency: "EUR",
+          sort: "name",
+        },
+      };
+      const options = ProductSoftDelete.breadHelper().createBrowseOptions({
+        ...mockRequest,
+      });
+      return ProductSoftDelete.browse(options).then((result) => {
+        expect(result.docs).to.have.length(4);
+        expect(result.docs[0].name).to.equal("ProductSoftDelete #1");
+      });
+    });
+
     it("executes a search request on arrays containing strings", function () {
       const mockRequest = { query: { search: "awesome" } };
       const options = ProductSoftDelete.breadHelper().createBrowseOptions({
@@ -1437,6 +1455,24 @@ describe("mongoose-bread", async function () {
         expect(result).to.be.an.instanceOf(Object);
         expect(result.query).to.be.an.instanceOf(Object);
         expect(result.query).to.have.keys(["$search"]);
+        expect(result.query)
+          .to.have.property("$search")
+          .with.keys(["index", "text"]);
+        expect(result.query.$search.index).to.equal("fulltexttest");
+      });
+    });
+
+    it("creates a $search query and adds additional query params if provided", function () {
+      return new Promise((resolve) => {
+        const mockRequest = { query: { search: "5", currency: "EUR" } };
+        const options = ProductAtlasSearch.breadHelper().createBrowseOptions({
+          ...mockRequest,
+        });
+        resolve(options);
+      }).then((result) => {
+        expect(result).to.be.an.instanceOf(Object);
+        expect(result.query).to.be.an.instanceOf(Object);
+        expect(result.query).to.have.keys(["$search", "currency"]);
         expect(result.query)
           .to.have.property("$search")
           .with.keys(["index", "text"]);

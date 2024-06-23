@@ -12,11 +12,29 @@ function parseQuery(query, options, schema) {
   if (query.query) return query.query;
 
   return query.search
-    ? parseSearchFilter(query, options)
+    ? parseSearchFilter(query, schema, options)
     : parseQueryFilter(query, schema);
 }
 
-function parseSearchFilter(query, options) {
+function removeKeysThatAreNotInSchema(query, schema) {
+  const keys = Object.keys(schema.paths);
+  return Object.keys(query).reduce(
+    (filter, key) => {
+      if (!keys.includes(key)) delete filter[key];
+      return filter;
+    },
+    { ...query }
+  );
+}
+
+function jsonStringFromQueryWithComparison(query) {
+  return JSON.stringify(query).replace(
+    /\b(gt|gte|lt|lte|in|eq|ne)\b/g,
+    (m) => `$${m}`
+  );
+}
+
+function parseSearchFilter(query, schema, options) {
   const { searchableFields } = options;
   if (!Array.isArray(searchableFields) || !searchableFields.length) {
     throw new MongooseBreadError({
@@ -27,9 +45,10 @@ function parseSearchFilter(query, options) {
       issuer: `MongooseBreadHelper parseSearchFilter`,
     });
   }
-
+  const sanitizedFilter = removeKeysThatAreNotInSchema(query, schema);
   if (options.enableAtlasSearch && options.atlasSearchIndex) {
-    const searchQuery = {
+    const atlasSearchQuery = {
+      ...sanitizedFilter,
       $search: {
         index: options.atlasSearchIndex,
         text: {
@@ -38,7 +57,7 @@ function parseSearchFilter(query, options) {
         },
       },
     };
-    return JSON.stringify(searchQuery);
+    return jsonStringFromQueryWithComparison(atlasSearchQuery);
   } else {
     const searchQuery = query.search
       .split(" ")
@@ -49,23 +68,16 @@ function parseSearchFilter(query, options) {
         return fieldQueriesCollection.concat(fieldQueries);
       }, []);
 
-    return JSON.stringify({ $or: searchQuery });
+    return jsonStringFromQueryWithComparison({
+      ...sanitizedFilter,
+      $or: searchQuery,
+    });
   }
 }
 
 function parseQueryFilter(query, schema) {
-  const keys = Object.keys(schema.paths);
-  const sanitizedFilter = Object.keys(query).reduce(
-    (filter, key) => {
-      if (!keys.includes(key)) delete filter[key];
-      return filter;
-    },
-    { ...query }
-  );
-  return JSON.stringify(sanitizedFilter).replace(
-    /\b(gt|gte|lt|lte|in|eq|ne)\b/g,
-    (m) => `$${m}`
-  );
+  const sanitizedFilter = removeKeysThatAreNotInSchema(query, schema);
+  return jsonStringFromQueryWithComparison(sanitizedFilter);
 }
 
 function parseProjection(query, options) {
