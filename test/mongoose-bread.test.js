@@ -1348,7 +1348,53 @@ describe("mongoose-bread", async function () {
       expect(bulkDeleteOptions).property("userId").to.equal(null);
       expect(bulkDeleteOptions).property("bulk").to.equal(true);
     });
-  }); // #endregion without softDelete
+
+    it("parses query params with comparison operators in helper methods correctly", function () {
+      const inBrowseOptions = Product.breadHelper().createBrowseOptions({
+        query: { _id: { in: ["123"] } },
+      });
+      const ninBrowseOptions = Product.breadHelper().createBrowseOptions({
+        query: { _id: { nin: ["123"] } },
+      });
+      const eqBrowseOptions = Product.breadHelper().createBrowseOptions({
+        query: { price: { eq: 100 } },
+      });
+      const gtBrowseOptions = Product.breadHelper().createBrowseOptions({
+        query: { price: { gt: 100 } },
+      });
+      const gteBrowseOptions = Product.breadHelper().createBrowseOptions({
+        query: { price: { gte: 100 } },
+      });
+      const ltBrowseOptions = Product.breadHelper().createBrowseOptions({
+        query: { price: { lt: 100 } },
+      });
+      const lteBrowseOptions = Product.breadHelper().createBrowseOptions({
+        query: { price: { lte: 100 } },
+      });
+      const neBrowseOptions = Product.breadHelper().createBrowseOptions({
+        query: { price: { ne: 100 } },
+      });
+
+      expect(inBrowseOptions.query).to.include.keys(["_id"]);
+      expect(ninBrowseOptions.query).to.include.keys(["_id"]);
+      expect(eqBrowseOptions.query).to.include.keys(["price"]);
+      expect(gtBrowseOptions.query).to.include.keys(["price"]);
+      expect(gteBrowseOptions.query).to.include.keys(["price"]);
+      expect(ltBrowseOptions.query).to.include.keys(["price"]);
+      expect(lteBrowseOptions.query).to.include.keys(["price"]);
+      expect(neBrowseOptions.query).to.include.keys(["price"]);
+
+      expect(inBrowseOptions.query._id).to.have.keys(["$in"]);
+      expect(ninBrowseOptions.query._id).to.have.keys(["$nin"]);
+      expect(eqBrowseOptions.query.price).to.have.keys(["$eq"]);
+      expect(gtBrowseOptions.query.price).to.have.keys(["$gt"]);
+      expect(gteBrowseOptions.query.price).to.have.keys(["$gte"]);
+      expect(ltBrowseOptions.query.price).to.have.keys(["$lt"]);
+      expect(lteBrowseOptions.query.price).to.have.keys(["$lte"]);
+      expect(neBrowseOptions.query.price).to.have.keys(["$ne"]);
+    });
+  });
+  // #endregion without softDelete
 
   // #region with transaction
   describe("with transaction", function () {

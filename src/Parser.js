@@ -29,7 +29,7 @@ function removeKeysThatAreNotInSchema(query, schema) {
 
 function jsonStringFromQueryWithComparison(query) {
   return JSON.stringify(query).replace(
-    /\b(gt|gte|lt|lte|in|eq|ne)\b/g,
+    /\b(gt|gte|lt|lte|in|nin|eq|ne)\b/g,
     (m) => `$${m}`
   );
 }
