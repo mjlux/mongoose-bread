@@ -120,7 +120,7 @@ function removeKeysThatAreNotInSchema(a, b) {
 }
 function jsonStringFromQueryWithComparison(a) {
   return JSON.stringify(a).replace(
-    /\b(gt|gte|lt|lte|in|eq|ne)\b/g,
+    /\b(gt|gte|lt|lte|in|nin|eq|ne)\b/g,
     function (a) {
       return `$${a}`;
     }
