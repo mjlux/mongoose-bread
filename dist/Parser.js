@@ -126,6 +126,9 @@ function jsonStringFromQueryWithComparison(a) {
     }
   );
 }
+function escapeRegExp(a) {
+  return a.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
 function parseSearchFilter(a, b, c) {
   var d = c.searchableFields;
   if (!Array.isArray(d) || !d.length)
@@ -150,12 +153,14 @@ function parseSearchFilter(a, b, c) {
     );
     return jsonStringFromQueryWithComparison(f);
   }
-  var g = a.search.split(" ").reduce(function (a, b) {
-    var c = d.map(function (a) {
-      return { [a]: { $regex: b, $options: "i" } };
-    });
-    return a.concat(c);
-  }, []);
+  var g = escapeRegExp(a.search)
+    .split(" ")
+    .reduce(function (a, b) {
+      var c = d.map(function (a) {
+        return { [a]: { $regex: b, $options: "i" } };
+      });
+      return a.concat(c);
+    }, []);
   return jsonStringFromQueryWithComparison(
     _objectSpread(_objectSpread({}, e), {}, { $or: g })
   );
