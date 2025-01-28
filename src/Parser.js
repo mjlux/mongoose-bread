@@ -34,6 +34,10 @@ function jsonStringFromQueryWithComparison(query) {
   );
 }
 
+function escapeRegExp(string) {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); // $& means the whole matched string
+}
+
 function parseSearchFilter(query, schema, options) {
   const { searchableFields } = options;
   if (!Array.isArray(searchableFields) || !searchableFields.length) {
@@ -59,7 +63,7 @@ function parseSearchFilter(query, schema, options) {
     };
     return jsonStringFromQueryWithComparison(atlasSearchQuery);
   } else {
-    const searchQuery = query.search
+    const searchQuery = escapeRegExp(query.search)
       .split(" ")
       .reduce((fieldQueriesCollection, searchTerm) => {
         const fieldQueries = searchableFields.map((field) => {

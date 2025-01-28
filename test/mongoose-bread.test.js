@@ -702,6 +702,18 @@ describe("mongoose-bread", async function () {
       });
     });
 
+    it("escapes a search request string correctly", function () {
+      const mockRequest = { query: { search: ".*+?^${}()|[]\\" } };
+      const options = ProductSoftDelete.breadHelper().createBrowseOptions({
+        ...mockRequest,
+      });
+      const searchQuery = options.query.$or;
+      expect(searchQuery.length).to.equal(3);
+      expect(searchQuery[0]?.name?.$regex).to.equal(
+        "\\.\\*\\+\\?\\^\\$\\{\\}\\(\\)\\|\\[\\]\\\\"
+      );
+    });
+
     it("executes a search request correctly", function () {
       const mockRequest = { query: { search: "5" } };
       const options = ProductSoftDelete.breadHelper().createBrowseOptions({
